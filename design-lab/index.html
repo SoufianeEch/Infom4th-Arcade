@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>InfoM4th Arcade · Design lab</title>
+<style>
+  body { margin: 0; font: 16px/1.5 system-ui, sans-serif; background: #f2f2f2; color: #111; }
+  @media (prefers-color-scheme: dark) { body { background: #151515; color: #eee; } .style-card { background: #222 !important; border-color: #333 !important; } .meta p { color: #aaa !important; } }
+  header { max-width: 1200px; margin: 0 auto; padding: 40px 24px 10px; }
+  h1 { margin: 0 0 6px; font-size: 32px; }
+  header p { margin: 0; color: #777; max-width: 70ch; }
+  ul { list-style: none; margin: 0 auto; padding: 24px; max-width: 1200px; display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 22px; }
+  .style-card { background: #fff; border: 1px solid #ddd; border-radius: 14px; overflow: hidden; }
+  .preview { height: 170px; display: flex; flex-direction: column; justify-content: center; gap: 14px; padding: 0 24px; }
+  .p-title { font-size: 26px; line-height: 1.1; }
+  .p-row { display: flex; gap: 10px; }
+  .p-btn { padding: 7px 16px; border-radius: 8px; font-weight: 700; font-size: 14px; }
+  .p-swatches { display: flex; gap: 6px; }
+  .p-swatches i { width: 22px; height: 22px; border-radius: 50%; border: 2px solid #8884; }
+  .meta { padding: 16px 20px 20px; }
+  .meta h2 { margin: 0 0 4px; font-size: 18px; }
+  .meta p { margin: 0 0 10px; color: #555; font-size: 14px; }
+  .links { display: flex; gap: 16px; }
+  .links a { color: #1f5cff; font-weight: 600; text-decoration: none; }
+</style>
+</head>
+<body data-page="gallery">
+<header>
+  <h1>Design lab</h1>
+  <p>Ten style directions for the arcade. Every one shows the same browse page and game page with placeholder content, and each game gets its own page colours. Nothing works on purpose. Use the bar at the bottom of each mockup (or ← →) to flip between styles.</p>
+</header>
+<ul id="styles"></ul>
+<script src="lab.js"></script>
+</body>
+</html>

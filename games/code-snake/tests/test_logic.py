@@ -65,6 +65,15 @@ class SnakeLogic(unittest.TestCase):
         g.on_pointer_down((10, 10)); g.on_pointer_up((12, 11))        # tap starts
         self.assertEqual(g.state, "playing")
 
+    def test_geist_fonts_are_bundled_and_load(self):
+        for name in ("DotGothic16-Latin.ttf", "DotGothic16-OFL.txt"):
+            self.assertTrue((Path(snake.__file__).parent / "fonts" / name).exists(), name)
+        self.assertGreater(snake.ui_font(40).get_height(), 10)
+        self.assertGreater(snake.mono_font(22).get_height(), 10)
+        # flat background: every row has the same colour (no gradient)
+        bg = snake.make_background()
+        self.assertEqual(bg.get_at((0, 0)), bg.get_at((0, bg.get_height() - 1)))
+
 
 if __name__ == "__main__":
     unittest.main()

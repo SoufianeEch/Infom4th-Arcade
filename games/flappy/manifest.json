@@ -4,6 +4,31 @@
   "tagline": "Guide the origami logo through the gates.",
   "entry": "index.html",
   "order": 10,
-  "controls": { "keyboard": "Space / Up / W", "touch": "Tap" },
-  "scoring": { "enabled": true, "label": "gates", "max": 5000 }
+  "controls": {
+    "keyboard": "Space / Up / W",
+    "touch": "Tap"
+  },
+  "scoring": {
+    "enabled": true,
+    "label": "gates",
+    "max": 5000
+  },
+  "aspect": "16/10",
+  "tags": [
+    "arcade",
+    "one-button"
+  ],
+  "short": "FLAPPY",
+  "glyph": "🐦",
+  "genre": "Arcade",
+  "madeWith": "HTML5",
+  "featured": true,
+  "description": "Tap to flap the InfoM4th origami logo through the gates. Grab coins and gem coins, earn bronze to platinum wings, and when you crash, flip a coin for a second chance.",
+  "theme": {
+    "bg": "#0f2a6b",
+    "fg": "#ffffff",
+    "accent": "#ffd43b",
+    "accentFg": "#2b2000",
+    "soft": "#1b3f96"
+  }
 }

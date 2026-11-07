@@ -2,9 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#080f19"><title>InfoM4th Arcade</title>
+<meta name="theme-color" content="#080f19"><title>InfoM4th DOOM</title>
+<meta name="color-scheme" content="light dark">
+<link rel="stylesheet" href="/shared/theme.css">
 <style>
-:root{color-scheme:dark;--bg:#080f19;--panel:#101e2c;--line:#2b4352;--cyan:#72dcf4;--text:#eaf8fb;--muted:#93aebd;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 78% -20%,#153e50 0,transparent 42%),var(--bg);color:var(--text)}button,a{font:inherit}button{cursor:pointer}button:focus-visible,a:focus-visible{outline:2px solid #a7efff;outline-offset:3px}.wrap{max-width:1200px;margin:auto;padding:24px 32px 40px}header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #263b49;padding-bottom:18px}.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text);font-size:19px;font-weight:800;letter-spacing:-.04em}.brand img{width:46px;height:46px;object-fit:contain}.brand b{color:var(--cyan)}.badge,.eyebrow{color:var(--cyan);font:700 10px monospace;letter-spacing:.16em;text-transform:uppercase}.badge{border:1px solid #305968;border-radius:99px;padding:8px 12px}.hero{display:flex;align-items:end;justify-content:space-between;gap:24px;margin:34px 0 22px}.hero h1{font-size:clamp(36px,6vw,66px);line-height:.95;letter-spacing:-.065em;margin:10px 0 0}.hero h1 span{color:var(--cyan)}.hero p{max-width:360px;color:var(--muted);font-size:14px;line-height:1.6;margin:0}.game-shell{background:#0b1722;border:1px solid #294657;border-radius:8px;overflow:hidden;box-shadow:0 24px 65px #0007}.game-shell:fullscreen{display:flex;flex-direction:column;justify-content:center;background:#080f19;overflow:auto}.toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;border-bottom:1px solid #263b49}.live{font:700 10px monospace;letter-spacing:.12em;color:#a0bdc9}.live:before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:#5ad8b4;margin-right:8px}.tools{display:flex;gap:7px;flex-wrap:wrap;justify-content:end}.tool,.toggle{border:1px solid #355262;border-radius:4px;background:#142a39;color:#d8f1f5;padding:8px 11px;font-size:12px;font-weight:700}.tool:hover,.toggle:hover{background:#1e4051}.tool.exit{color:#ffbfc1;border-color:#6d4249;background:#33212a}.screen{position:relative;background:#000;aspect-ratio:4/3;max-height:68vh}.game-shell:fullscreen .screen{flex:1;min-height:0;max-height:none;aspect-ratio:auto}canvas{display:block;width:100%;height:100%;object-fit:contain;image-rendering:pixelated;outline:none}.overlay{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:18px;background:radial-gradient(circle at 50% 30%,#173d4c,#0a1925 55%,#08111b)}.overlay.hidden,[hidden]{display:none!important}.panel{max-width:430px}.panel img{width:clamp(65px,12vw,110px);height:auto}.panel h2{font-size:clamp(24px,4vw,44px);letter-spacing:-.05em;line-height:1;margin:12px 0}.panel p{color:#a9c1cc;line-height:1.5;font-size:14px}.start{background:var(--cyan);color:#06202c;border:0;border-radius:3px;padding:14px 25px;font-size:12px;font-weight:900;letter-spacing:.06em}.start:disabled{opacity:.55;cursor:wait}.status{font:11px monospace;color:#abc5d1;max-height:48px;overflow:auto}.mobile-controls{padding:12px;background:#0c1a26;border-top:1px solid var(--line);user-select:none;-webkit-user-select:none;touch-action:none}.control-header{display:flex;justify-content:space-between;align-items:center;font:700 10px monospace;letter-spacing:.12em;color:#a4bfca;margin-bottom:9px}.pads{display:grid;grid-template-columns:1fr 1fr;gap:12px}.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}.pad button,.menu-buttons button{border:1px solid #385869;border-radius:5px;color:#dff7fc;background:#172f3e;font-weight:800;min-height:44px;touch-action:none}.pad button:active,.pad button.pressed,.menu-buttons button:active{background:#4db6cd;color:#061722}.pad .fire{background:#24566b;color:#a9efff}.menu-buttons{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;margin-top:7px}.menu-buttons button{min-height:36px;font-size:11px}.caption{display:flex;justify-content:space-between;gap:20px;padding:18px 0;color:var(--muted);font-size:12px;line-height:1.7}.caption strong{color:#ddf4f7}.caption a{color:var(--cyan)}@media(max-width:700px){.wrap{padding:16px 14px 28px}.hero{display:block;margin:26px 0 20px}.hero p{margin-top:12px}.toolbar{align-items:flex-start}.live{padding-top:10px}.tool{padding:8px;font-size:11px}.caption{display:block}.caption>div+div{margin-top:12px}.badge{display:none}.game-shell:fullscreen .screen{max-height:none}.game-shell:fullscreen .mobile-controls{padding:6px}.game-shell:fullscreen .pad button{min-height:35px}.game-shell:fullscreen .menu-buttons button{min-height:30px}}
+:root{}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text)}button,a{font:inherit}button{cursor:pointer}button:focus-visible,a:focus-visible{outline:2px solid #a7efff;outline-offset:3px}.wrap{max-width:1200px;margin:auto;padding:24px 32px 40px}header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #263b49;padding-bottom:18px}.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text);font-size:19px;font-weight:800;letter-spacing:-.04em}.brand img{width:46px;height:46px;object-fit:contain}.brand b{color:var(--cyan)}.badge,.eyebrow{color:var(--cyan);font:700 10px monospace;letter-spacing:.16em;text-transform:uppercase}.badge{border:1px solid #305968;border-radius:99px;padding:8px 12px}.hero{display:flex;align-items:end;justify-content:space-between;gap:24px;margin:34px 0 22px}.hero h1{font-size:clamp(36px,6vw,66px);line-height:.95;letter-spacing:-.065em;margin:10px 0 0}.hero h1 span{color:var(--cyan)}.hero p{max-width:360px;color:var(--muted);font-size:14px;line-height:1.6;margin:0}.game-shell{background:#0b1722;border:1px solid #294657;border-radius:8px;overflow:hidden;box-shadow:0 24px 65px #0007}.game-shell:fullscreen{display:flex;flex-direction:column;justify-content:center;background:#080f19;overflow:auto}.toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;border-bottom:1px solid #263b49}.live{font:700 10px monospace;letter-spacing:.12em;color:#a0bdc9}.live:before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:#5ad8b4;margin-right:8px}.tools{display:flex;gap:7px;flex-wrap:wrap;justify-content:end}.tool,.toggle{border:1px solid #355262;border-radius:4px;background:#142a39;color:#d8f1f5;padding:8px 11px;font-size:12px;font-weight:700}.tool:hover,.toggle:hover{background:#1e4051}.tool.exit{color:#ffbfc1;border-color:#6d4249;background:#33212a}.screen{position:relative;background:#000;aspect-ratio:4/3;max-height:68vh}.game-shell:fullscreen .screen{flex:1;min-height:0;max-height:none;aspect-ratio:auto}canvas{display:block;width:100%;height:100%;object-fit:contain;image-rendering:pixelated;outline:none}.overlay{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:18px;background:#0b1a26}.overlay.hidden,[hidden]{display:none!important}.panel{max-width:430px}.panel img{width:clamp(65px,12vw,110px);height:auto}.panel h2{font-size:clamp(24px,4vw,44px);letter-spacing:-.05em;line-height:1;margin:12px 0}.panel p{color:#a9c1cc;line-height:1.5;font-size:14px}.start{background:var(--cyan);color:#06202c;border:0;border-radius:3px;padding:14px 25px;font-size:12px;font-weight:900;letter-spacing:.06em}.start:disabled{opacity:.55;cursor:wait}.status{font:11px monospace;color:#abc5d1;max-height:48px;overflow:auto}.mobile-controls{padding:12px;background:#0c1a26;border-top:1px solid var(--line);user-select:none;-webkit-user-select:none;touch-action:none}.control-header{display:flex;justify-content:space-between;align-items:center;font:700 10px monospace;letter-spacing:.12em;color:#a4bfca;margin-bottom:9px}.pads{display:grid;grid-template-columns:1fr 1fr;gap:12px}.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}.pad button,.menu-buttons button{border:1px solid #385869;border-radius:5px;color:#dff7fc;background:#172f3e;font-weight:800;min-height:44px;touch-action:none}.pad button:active,.pad button.pressed,.menu-buttons button:active{background:#4db6cd;color:#061722}.pad .fire{background:#24566b;color:#a9efff}.menu-buttons{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;margin-top:7px}.menu-buttons button{min-height:36px;font-size:11px}.caption{display:flex;justify-content:space-between;gap:20px;padding:18px 0;color:var(--muted);font-size:12px;line-height:1.7}.caption strong{color:#ddf4f7}.caption a{color:var(--cyan)}@media(max-width:700px){.wrap{padding:16px 14px 28px}.hero{display:block;margin:26px 0 20px}.hero p{margin-top:12px}.toolbar{align-items:flex-start}.live{padding-top:10px}.tool{padding:8px;font-size:11px}.caption{display:block}.caption>div+div{margin-top:12px}.badge{display:none}.game-shell:fullscreen .screen{max-height:none}.game-shell:fullscreen .mobile-controls{padding:6px}.game-shell:fullscreen .pad button{min-height:35px}.game-shell:fullscreen .menu-buttons button{min-height:30px}}
 /* Touch gamepad */
 .game-shell.landscape-mode{position:fixed;inset:0;z-index:100;background:#07121b;overflow:auto;border:0;border-radius:0}
 .page-actions{display:flex;justify-content:flex-end;margin:0 0 10px}.page-actions .tool{padding:10px 16px}
@@ -40,34 +42,72 @@
  .game-shell:fullscreen .center-controls,.game-shell.landscape-mode .center-controls{position:absolute;bottom:0;left:50%;transform:translateX(-50%);flex-direction:row;pointer-events:auto}
  .game-shell:fullscreen .center-controls button,.game-shell.landscape-mode .center-controls button{padding:5px 8px}
 }
+
+
+/* ---- InfoM4th Arcade look: Notebook Paper (tokens from /shared/theme.css). The game screen stays black. ---- */
+:root{--cyan:var(--blue);font-family:var(--hand)}
+body{background-color:var(--paper);background-image:var(--grid-bg);color:var(--ink);font-family:var(--hand)}
+.wrap,.game-shell{background:transparent;border:0}
+.toolbar{background:transparent;border-bottom:2px solid var(--red);padding:8px 14px}
+.live{font:700 26px var(--title)!important;letter-spacing:.04em;color:var(--ink)}
+.live:before{background:var(--red);width:10px;height:10px}
+.tools{gap:12px}
+.tool,.toggle{font:700 21px/1.1 var(--title);min-height:42px;padding:4px 16px;color:var(--ink);background:var(--card);border:2px solid var(--ink);border-radius:var(--wob-1);box-shadow:3px 4px 0 var(--ink);transition:transform .1s,box-shadow .1s}
+.tool:hover,.toggle:hover{background:var(--card);transform:rotate(-1.5deg)}
+.tool:active,.toggle:active{transform:translate(3px,4px);box-shadow:0 0 0 var(--ink)}
+.tool.exit{background:var(--red);color:#fff}
+.screen{background:#000}
+.overlay{background:#140606}
+.panel{max-width:460px}
+.panel h2{font:700 clamp(46px,7vw,72px)/1 var(--title);color:#ffe9e2;margin:14px 0 20px}
+.start{font:700 28px var(--title);min-height:58px;padding:6px 36px;color:#fff;background:#ff3b2f;border:2px solid #ffe9e2;border-radius:var(--wob-1);box-shadow:3px 4px 0 #ffe9e2;transition:transform .1s,box-shadow .1s}
+.start:active:not(:disabled){transform:translate(3px,4px);box-shadow:0 0 0 #ffe9e2}
+.start:disabled{opacity:.7}
+.status{font:400 19px var(--hand)!important;color:#ffcfc4;margin-top:16px}
+.mobile-controls{background:transparent;border-top:2px solid var(--red);padding-bottom:24px}
+.cross button,.face button,.shoulders button,.center-controls button{font-family:var(--title);font-weight:700;color:var(--ink);background:var(--card);border:2px solid var(--ink);box-shadow:3px 4px 0 var(--ink);transition:transform .1s,box-shadow .1s}
+.center-controls button{font-size:17px!important}
+.shoulders button{font-size:18px;border-radius:var(--wob-1)}
+.cross button{border-radius:12px}
+.cross button.pressed,.face button.pressed,.shoulders button.pressed,.center-controls button.pressed{background:var(--hl);color:var(--ink);transform:translate(3px,4px);box-shadow:0 0 0 var(--ink)}
+.legal{font:400 16px var(--hand)!important;color:var(--ink-soft);background:transparent;border-top:2px solid var(--red);padding:6px 14px}
+.legal a{color:var(--ink);text-decoration:underline wavy var(--red)}
+
+/* Embedded layout: just the game, filling the frame (itch.io style). */
+html,body{height:100%;overflow:hidden}
+.wrap{max-width:none;height:100dvh;padding:0;display:flex;flex-direction:column}
+.game-shell{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;border:0;border-radius:0;box-shadow:none}
+.toolbar{flex:none;padding:6px 12px}
+.screen{flex:1 1 auto;min-height:0;max-height:none;aspect-ratio:auto;display:grid;place-items:center}
+.screen canvas{max-width:100%;max-height:100%;width:auto;height:auto;aspect-ratio:4/3}
+.mobile-controls{flex:none}
+.legal{flex:none;margin:0;padding:5px 12px;font:10px monospace;color:#5e7786;text-align:center;background:#080f19}
+.legal a{color:#7f98a7}
+.panel p:empty{display:none}
 </style></head>
 <body><main class="wrap">
-<header><a class="brand" href="./"><img src="theme/infom4th-logo.png" alt=""><span>INFO<b>M4TH</b> / ARCADE</span></a><span class="badge">A CLUB PROJECT</span></header>
-<section class="hero"><div><div class="eyebrow">MISSION 01 / ARCADE</div><h1>INFO<span>M4TH</span> DOOM.</h1></div><p>Classic first-person action, reimagined for our club. Pick up your keyboard or use the touch controls and jump in.</p></section>
-<div class="page-actions"><button class="tool exit" id="pageExit" type="button">Exit game</button></div>
 <section class="game-shell" id="gameShell" aria-label="Game and controls">
-<div class="toolbar"><span class="live">SINGLE PLAYER</span><div class="tools"><button class="tool" id="menu" type="button">Game menu</button><button class="tool" id="fullscreen" type="button">Fullscreen</button><button class="tool" id="toggleControls" type="button" aria-expanded="false" aria-controls="controls">Touch controls</button><button class="tool exit" id="exit" type="button">Exit game</button></div></div>
-<div class="screen"><canvas id="canvas" tabindex="0" aria-label="DOOM game screen" oncontextmenu="event.preventDefault()"></canvas><div class="overlay" id="overlay"><div class="panel"><img src="theme/infom4th-logo.png" alt="InfoM4th logo"><div class="eyebrow">WELCOME TO THE ARCADE</div><h2>READY FOR YOUR MISSION?</h2><p>Jump into a classic game with the InfoM4th look. The first load may take a moment.</p><button class="start" id="start" disabled>LOADING GAME...</button><p id="status" class="status" role="status">Preparing engine...</p></div></div></div>
+<div class="toolbar"><span class="live">DOOM</span><div class="tools"><button class="tool" id="menu" type="button">Menu</button><button class="tool" id="fullscreen" type="button">Fullscreen</button><button class="tool" id="toggleControls" type="button" aria-expanded="false" aria-controls="controls">Touch controls</button><button class="tool exit" id="exit" type="button">Exit</button></div></div>
+<div class="screen"><canvas id="canvas" tabindex="0" aria-label="DOOM game screen" oncontextmenu="event.preventDefault()"></canvas><div class="overlay" id="overlay"><div class="panel"><img src="theme/infom4th-logo.png" alt=""><h2>DOOM</h2><button class="start" id="start" disabled>LOADING...</button><p id="status" class="status" role="status">Preparing engine...</p></div></div></div>
 <div class="mobile-controls" id="controls" hidden>
-<div class="controller-top"><span>VIRTUAL CONTROLLER</span><span>HOLD BUTTONS TO MOVE</span></div>
 <div class="shoulders"><button data-keys="KeyA" aria-label="Strafe left">L1 &nbsp; STRAFE LEFT</button><span></span><button data-keys="KeyD" aria-label="Strafe right">R1 &nbsp; STRAFE RIGHT</button></div>
 <div class="controller-body">
-  <div class="cluster"><span class="pad-label">MOVE / MENU</span><div class="cross">
+  <div class="cluster"><div class="cross">
     <button class="up" data-keys="ArrowUp" aria-label="Move forward or menu up">&#9650;</button>
     <button class="left" data-keys="ArrowLeft" aria-label="Turn left or menu left">&#9664;</button>
     <button class="right" data-keys="ArrowRight" aria-label="Turn right or menu right">&#9654;</button>
     <button class="down" data-keys="ArrowDown" aria-label="Move backward or menu down">&#9660;</button>
   </div></div>
   <div class="center-controls"><button data-keys="Backspace" aria-label="Back in game menu">BACK</button><button data-keys="Escape" aria-label="Open game menu">START</button><button data-keys="Shift" aria-label="Hold to run">RUN</button><button data-keys="KeyY" aria-label="Confirm game prompt">YES</button><button id="resetControls" type="button" aria-label="Release all game controls">STOP</button></div>
-  <div class="cluster"><span class="pad-label">ACTIONS</span><div class="face">
+  <div class="cluster"><div class="face">
     <button class="triangle" data-keys="Digit2" aria-label="Select weapon 2">&#9651;</button>
     <button class="square" data-keys="Digit3" aria-label="Select weapon 3">&#9633;</button>
     <button class="circle" data-keys="Control" aria-label="Fire">&#9675;</button>
     <button class="crossbutton" data-keys="Space Enter" aria-label="Use or select">&#10005;</button>
   </div></div>
-</div><p class="control-help">D-pad: move and turn &nbsp; &middot; &nbsp; &#9675; fire &nbsp; &middot; &nbsp; &#10005; use / select &nbsp; &middot; &nbsp; &#9651; / &#9633; weapons</p></div>
+</div></div>
 </section>
-<div class="caption"><div><strong>KEYBOARD</strong><br>Arrows move and turn &middot; A/D strafe &middot; Ctrl fires &middot; Space opens doors &middot; Esc opens the game menu</div><div><strong>NEED A BREAK?</strong><br>Use Exit game above the screen. Restarting clears saves from this browser session.<br><a href="runtime/COPYING">Engine license</a> &middot; <a href="https://github.com/Saketh-Chandra/doom-wasm-pwa/tree/a77edfd8bbc7">Engine source</a> &middot; <a href="runtime/FREEDOOM-COPYING.txt">Freedoom license</a> &middot; <a href="runtime/FREEDOOM-CREDITS.txt">Credits</a></div></div>
+<p class="legal"><a href="runtime/COPYING">Engine licence</a> · <a href="https://github.com/Saketh-Chandra/doom-wasm-pwa/tree/a77edfd8bbc7">Engine source</a> · <a href="runtime/FREEDOOM-COPYING.txt">Freedoom licence</a> · <a href="runtime/FREEDOOM-CREDITS.txt">Credits</a></p>
 </main>
 <script>
 (function(){
@@ -136,15 +176,15 @@
   toggle.addEventListener('click',()=>showControls(controls.hidden));
   document.getElementById('menu').addEventListener('click',()=>{if(document.pointerLockElement)document.exitPointerLock();tap('Escape')});
   async function exitGame(){
-    if(running&&!window.confirm('Exit the game? Your current session and temporary saves will be lost.'))return;
+    if(running&&!window.confirm('Leave the game? Temporary saves will be lost.'))return;
     releaseAll();
     if(document.pointerLockElement)document.exitPointerLock();
     if(document.fullscreenElement){try{await document.exitFullscreen()}catch(e){}}
     shell.classList.remove('landscape-mode');
+    if(window.parent!==window){try{window.parent.postMessage({type:'arcade:exit'},location.origin);return}catch(e){}}
     location.reload();
   }
   document.getElementById('exit').addEventListener('click',exitGame);
-  document.getElementById('pageExit').addEventListener('click',exitGame);
   const fullscreenButton=document.getElementById('fullscreen');
   function updateFullscreenLabel(){fullscreenButton.textContent=(document.fullscreenElement===shell||shell.classList.contains('landscape-mode'))?'Exit fullscreen':'Fullscreen'}
   document.addEventListener('fullscreenchange',updateFullscreenLabel);
@@ -165,6 +205,6 @@
     onAbort:reason=>message('Engine failed: '+reason)
   };
   start.addEventListener('click',function(){start.disabled=true;try{canvas.focus();callMain(['-iwad','freedoom1.wad','-file','infom4th-menu.wad','-window','-nogui','-nomusic','-config','default.cfg','-savedir','/savefiles']);running=true;overlay.classList.add('hidden')}catch(e){message('Could not start: '+(e.message||e));start.disabled=false}});
-  const script=document.createElement('script');script.src='runtime/websockets-doom.js';script.onerror=function(){message('Game files are missing. Run node setup-game.js first.');start.textContent='SETUP NEEDED'};document.body.appendChild(script);
+  const script=document.createElement('script');script.src='runtime/websockets-doom.js';script.onerror=function(){message('Game files are missing.');start.textContent='SETUP NEEDED'};document.body.appendChild(script);
 })();
 </script></body></html>

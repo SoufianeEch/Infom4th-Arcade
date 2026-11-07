@@ -23,5 +23,5 @@ All guarded by `WEB = sys.platform == "emscripten"`; desktop behaviour is unchan
 - Mouse/touch: tap = start/restart, swipe = steer.
 
 ## Known limits
-- The pygbag runtime (Python-in-WebAssembly, several MB) loads from `pygame-web.github.io` on first visit, so players need internet once (the browser then caches it).
+- The pygbag runtime (Python-in-WebAssembly, ~22 MB) is served by the arcade itself from `/pygbag/` (`vendor/pygbag/`), so no internet is needed.
 - Not yet verified in a real browser; see `/PROGRESS.md`.

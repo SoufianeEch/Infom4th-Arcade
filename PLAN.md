@@ -76,9 +76,9 @@ Order = easiest/highest value first. See `docs/PORTING_PYTHON_GAMES.md`.
 
 - [x] **Decision: games stay in Python**, built with pygbag. Build verified; browser check still pending.
 - [x] Code Snake → `games/code-snake/` (stays Python, pygbag build; browser-untested)
-- [ ] Flashcard Sniper → `games/flashcard-sniper/`
-- [ ] PyRacer → `games/py-racer/` (largest; keep modules, add tests that still run on CPython)
-- [ ] Replace JSON-file scores with browser storage in each port.
+- [x] Flashcard Sniper → `games/flashcard-sniper/` (browser-untested)
+- [x] Typing race → `games/type-race/` (from `typing_race_mvp`; the big PyRacer folder is gone from Prj-00)
+- [x] Replace JSON-file scores with browser storage in each port.
 - [ ] Add touch controls where the game needs a keyboard.
 
 ## Phase 4 — Polish & hosting for other users

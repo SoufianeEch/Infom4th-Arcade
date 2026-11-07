@@ -11,24 +11,29 @@ const fs = require('node:fs');
 const fsp = fs.promises;
 const path = require('node:path');
 const os = require('node:os');
+const pygbag = require('./pygbag.cjs');
 
 const ROOT = path.resolve(__dirname, '..');
 const MIME = {
   '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.cjs': 'text/javascript; charset=utf-8',
   '.css': 'text/css; charset=utf-8', '.json': 'application/json; charset=utf-8', '.txt': 'text/plain; charset=utf-8',
   '.cfg': 'text/plain; charset=utf-8', '.png': 'image/png', '.svg': 'image/svg+xml', '.wasm': 'application/wasm',
-  '.wad': 'application/octet-stream', '.ttf': 'font/ttf', '.woff2': 'font/woff2',
+  '.wad': 'application/octet-stream', '.data': 'application/octet-stream', '.whl': 'application/zip', '.ogg': 'audio/ogg', '.ttf': 'font/ttf', '.woff2': 'font/woff2',
 };
 const TOP_N = 10;          // rows returned
 const KEEP_N = 100;        // rows stored per game
 const RATE_LIMIT = 10;     // default: score posts per IP per minute
 const NAME_RE = /^[A-Za-z0-9 _.\-]{1,12}$/;
+const RESERVED_NAMES = new Set(['anon', 'anonymous', 'guest', 'player', 'unknown']);   // the old default and placeholders are not allowed
 
 function createApp(options = {}) {
   const dataDir = path.resolve(options.dataDir || process.env.DATA_DIR || path.join(ROOT, 'data'));
   const gamesDir = path.resolve(options.gamesDir || path.join(ROOT, 'games'));
   const hubDir = path.join(ROOT, 'hub');
   const sharedDir = path.join(ROOT, 'shared');
+  const pygbagDir = path.resolve(options.pygbagDir || path.join(ROOT, 'vendor', 'pygbag'));
+  const pygbagCache = path.join(dataDir, 'pygbag-cache');      // files fetched on demand (writable, survives restarts in Docker)
+  const upstream = options.pygbagUpstream === undefined ? (process.env.PYGBAG_PROXY === '0' ? null : pygbag.UPSTREAM) : options.pygbagUpstream;
   const scoresFile = path.join(dataDir, 'scores.json');
   const rateLimit = options.rateLimit || RATE_LIMIT;
   const hits = new Map();
@@ -110,6 +115,7 @@ function createApp(options = {}) {
       if (!game || !game.scoring?.enabled) return send(res, 400, { error: 'unknown game or scoring disabled' });
       const name = typeof body.name === 'string' ? body.name.trim() : '';
       if (!NAME_RE.test(name)) return send(res, 400, { error: 'name must be 1-12 letters, digits, space, _ . -' });
+      if (RESERVED_NAMES.has(name.toLowerCase())) return send(res, 400, { error: 'please choose your own name' });
       const max = Number.isSafeInteger(game.scoring.max) ? game.scoring.max : 1000000;
       if (!Number.isSafeInteger(body.score) || body.score < 1 || body.score > max) return send(res, 400, { error: 'score out of range' });
       const all = await loadScores();
@@ -126,10 +132,35 @@ function createApp(options = {}) {
     return send(res, 404, { error: 'not found' });
   }
 
+  /** Resolve /pygbag/<rel>: bundled mirror first, then on-demand cache, then (if allowed) download once from upstream. */
+  async function pygbagFile(rel) {
+    if (!/^(cdn|archives)\/[A-Za-z0-9_.+\-\/]+$/.test(rel) || rel.split('/').includes('..') || rel.includes('//')) return null;
+    for (const dir of [pygbagDir, pygbagCache]) {
+      const f = path.join(dir, rel);
+      if (f.startsWith(dir + path.sep) && fs.existsSync(f) && fs.statSync(f).isFile()) return { base: dir, file: f };
+    }
+    if (!upstream) return null;
+    try {
+      const r = await fetch(`${upstream}/${rel}`, { redirect: 'follow', signal: AbortSignal.timeout(60000) });
+      if (!r.ok) return null;
+      let body = Buffer.from(await r.arrayBuffer());
+      if (/^cdn\/index-.*\.json$/.test(rel)) body = Buffer.from(pygbag.rewriteIndex(body.toString('utf8')));
+      const dest = path.join(pygbagCache, rel);
+      await fsp.mkdir(path.dirname(dest), { recursive: true });
+      await fsp.writeFile(dest + '.part', body);
+      await fsp.rename(dest + '.part', dest);
+      return { base: pygbagCache, file: dest };
+    } catch { return null; }
+  }
+
   async function serveStatic(req, res, pathname) {
     if (req.method !== 'GET' && req.method !== 'HEAD') return send(res, 405, 'Method not allowed', { Allow: 'GET, HEAD' });
     let base = hubDir, rel = pathname;
-    if (pathname.startsWith('/games/')) { base = gamesDir; rel = pathname.slice(7); }
+    if (pathname.startsWith('/pygbag/')) {
+      const hit = await pygbagFile(pathname.slice(8));
+      if (!hit) return send(res, 404, 'Not found');
+      base = hit.base; rel = path.relative(hit.base, hit.file);
+    } else if (pathname.startsWith('/games/')) { base = gamesDir; rel = pathname.slice(7); }
     else if (pathname.startsWith('/shared/')) { base = sharedDir; rel = pathname.slice(8); }
     let file = path.resolve(base, '.' + path.sep + rel);
     if (file !== base && !file.startsWith(base + path.sep)) return send(res, 403, 'Forbidden');

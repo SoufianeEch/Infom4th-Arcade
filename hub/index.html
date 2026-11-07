@@ -3,27 +3,72 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
   <title>InfoM4th Arcade</title>
-  <!-- v0: intentionally unstyled. Styling comes later (see PROGRESS.md). -->
+  <link rel="icon" href="./logo.png" type="image/png">
+  <link rel="stylesheet" href="/shared/theme.css">
+  <link rel="stylesheet" href="./arcade.css">
 </head>
 <body>
-  <header>
-    <h1>InfoM4th Arcade</h1>
-    <label>Player name <input id="player" maxlength="12" placeholder="ANON" autocomplete="off"></label>
+  <header class="site-head">
+    <a class="logo" href="#/"><span class="logo-mark"><img src="./logo.png" alt="" width="28" height="28"></span><span class="logo-text">InfoM4th <b>Arcade</b></span></a>
+    <nav class="nav" aria-label="Main"><a href="#/" id="nav-browse" class="active">Browse</a><a href="#/scores" id="nav-scores">Leaderboards</a></nav>
+    <label class="search"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="Search games" aria-label="Search games" autocomplete="off"></label>
+    <div class="user" id="who" hidden><span class="avatar" id="avatar" aria-hidden="true"></span><span class="user-name" id="who-name"></span><button class="btn btn-ghost btn-small" id="change-name" type="button">Change</button></div>
   </header>
 
-  <main id="menu">
-    <h2>Select a game</h2>
-    <ul id="games"><li>Loading…</li></ul>
-    <p id="menu-error" hidden></p>
+  <!-- browse -->
+  <div id="view-browse" class="layout">
+    <aside class="filters" id="filters" aria-label="Filters"></aside>
+    <main class="browse">
+      <section class="featured" id="featured" hidden></section>
+      <div class="browse-head"><h1>Browse games</h1><p class="count" id="count"></p><div class="sort" id="sort" role="group" aria-label="Sort"></div></div>
+      <ul class="grid" id="games" aria-label="Games"></ul>
+      <p id="menu-error" class="empty-note" hidden></p>
+    </main>
+  </div>
+
+  <!-- game page -->
+  <div id="view-game" hidden>
+    <section class="game-banner"><div class="banner-inner"><span class="banner-glyph" id="g-glyph" aria-hidden="true"></span><div><h1 class="game-title" id="now-playing"></h1><p class="game-tagline" id="now-tagline"></p></div></div></section>
+    <div class="game-layout">
+      <main class="game-main">
+        <div class="embed">
+          <div class="embed-screen" id="stage">
+            <div class="embed-cover" id="embed-cover"><span class="embed-glyph" id="cover-glyph" aria-hidden="true"></span><button class="btn btn-run btn-big" id="run" type="button">▶ Run game</button><p class="embed-hint" id="embed-hint"></p></div>
+            <iframe id="frame" title="Game" allow="fullscreen; autoplay; gamepad" allowfullscreen hidden></iframe>
+          </div>
+          <div class="embed-bar"><span class="embed-name" id="embed-name"></span><span class="embed-tools"><button class="btn btn-ghost btn-small" id="fs" type="button">⛶ Fullscreen</button><button class="btn btn-ghost btn-small" id="back" type="button">← All games</button></span></div>
+        </div>
+        <section class="desc"><h2>About this game</h2><p id="g-desc"></p></section>
+        <section class="controls-sec"><h2>Controls</h2><table class="controls"><tbody id="g-controls"></tbody></table></section>
+      </main>
+      <aside class="game-side">
+        <div class="panel play-panel"><button class="btn btn-play btn-big" id="play-btn" type="button">Play now</button><p class="player-line">Playing as <b id="play-name"></b></p><button class="btn btn-ghost btn-small" id="change-name-2" type="button">Change name</button></div>
+        <div class="panel scores" id="side"><h3>High scores</h3><ol id="board"></ol><p class="toast" id="toast" role="status"></p></div>
+        <div class="panel info"><h3>More information</h3><table><tbody id="g-info"></tbody></table></div>
+        <div class="panel more"><h3>More games</h3><ul id="g-more"></ul></div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- leaderboards -->
+  <main id="view-scores" class="boards-page" hidden>
+    <h1>Leaderboards</h1>
+    <div class="boards" id="boards"></div>
   </main>
 
-  <section id="player-view" hidden>
-    <p><button id="back" type="button">← Menu</button> <strong id="now-playing"></strong> <button id="fs" type="button">Fullscreen</button> <span id="toast"></span></p>
-    <iframe id="frame" title="game" width="960" height="600" allow="fullscreen; autoplay; gamepad"></iframe>
-    <h3>Leaderboard</h3>
-    <ol id="board"></ol>
-  </section>
+  <footer class="site-foot"><p>InfoM4th Arcade · made by the club · scores are shared with everyone on this server</p></footer>
+
+  <dialog id="name-dialog" aria-labelledby="name-title">
+    <form id="name-form" method="dialog" novalidate>
+      <h2 id="name-title">What's your name?</h2>
+      <p>It goes on the high-score board. You need one to play.</p>
+      <input id="name-input" maxlength="12" autocomplete="off" spellcheck="false" placeholder="your name" aria-describedby="name-error">
+      <p id="name-error" class="error" role="alert"></p>
+      <div class="dialog-actions"><button class="btn btn-play" type="submit">Let's go</button><button id="name-cancel" class="btn btn-ghost" type="button">Cancel</button></div>
+    </form>
+  </dialog>
 
   <script src="./arcade.js"></script>
 </body>

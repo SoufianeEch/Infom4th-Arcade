@@ -1,5 +1,6 @@
 (function () {
   'use strict';
+try { document.fonts.load('20px "Patrick Hand"');  } catch {}
   const { FlappyEngine, clamp } = window.InfoM4thFlight;
   const $ = id => document.getElementById(id);
   const canvas = $('runner-canvas'), ctx = canvas.getContext('2d');
@@ -26,14 +27,7 @@
     wallet = Number.isSafeInteger(saved.wallet) && saved.wallet >= 0 ? Math.min(saved.wallet, 9999999) : 0;
   } catch { /* A disabled/full store must not prevent playing. */ }
   function save() { try { localStorage.setItem(storageKey, JSON.stringify({ best, sound, wallet })); } catch {} }
-  if (typeof config.maintenanceMessage === 'string') {
-    $('maintenance-message').replaceChildren();
-    config.maintenanceMessage.split('\n').forEach((line, index) => {
-      if (index) $('maintenance-message').append(document.createElement('br'));
-      $('maintenance-message').append(document.createTextNode(line));
-    });
-  }
-  $('year').textContent = String(new Date().getFullYear());
+
   function unlockAudio() {
     if (!sound) return;
     try {
@@ -108,8 +102,8 @@
       }
     }
     if (event === 'milestone') {
-      const messages = { 5: 'BRONZE WINGS. Nice start!', 10: 'DOUBLE DIGITS. Stay smooth.', 15: 'SILVER WINGS. Finding your flow.', 20: 'TWENTY GATES. Keep it going.', 30: 'GOLD WINGS. Beautiful flying.', 50: 'PLATINUM. Incredible flight.' };
-      toast(messages[detail] || detail + ' GATES. Keep the rhythm.', 2);
+      const messages = { 5: 'Bronze', 15: 'Silver', 30: 'Gold', 50: 'Platinum' };
+      toast(messages[detail] || String(detail), 1.2);
       tone(1200, 0.18);
     }
     if (event === 'crash') {
@@ -130,7 +124,7 @@
     $('pause-button').setAttribute('aria-label', state === 'paused' ? 'Resume game' : 'Pause game');
     $('pause-button').title = state === 'paused' ? 'Resume (P / Escape)' : 'Pause (P / Escape)';
     $('flight-hud').hidden = state !== 'running';
-    setText('run-label', ({ ready: 'READY WHEN YOU ARE', running: 'FIND YOUR RHYTHM', paused: 'TAKING A BREATHER', over: 'ONE MORE LITTLE FLIGHT?' })[state]);
+    setText('run-label', ({ ready: '', running: '', paused: 'PAUSED', over: 'GAME OVER' })[state]);
     if (state !== previousState) {
       const messages = {
         running: 'Flight started. Tap, click or press Space to flap through the gaps.',
@@ -179,7 +173,7 @@
     setText('result-perfects', String(engine.perfects));
     setText('result-coins', String(engine.coinCount));
     updateChance();
-    setText('end-kicker', newBest ? 'NEW PERSONAL BEST. LOOK AT YOU FLY.' : 'EVERY GREAT FLIGHT TAKES PRACTICE');
+    setText('end-kicker', newBest ? 'NEW BEST' : '');
     setText('medal-value', award.name + (award.name === 'ROOKIE' ? ' / BRONZE AT 5' : ' WINGS'));
     $('medal-value').dataset.medal = award.name.toLowerCase();
     setText('best-score', pad(best));
@@ -196,7 +190,7 @@
     $('chance-button').disabled = used || wallet < flipCost;
     setText('chance-label', used ? 'Second chance used' :
       wallet < flipCost ? 'Collect ' + flipCost + ' coins to flip (' + wallet + ')' :
-      'Flip for a second chance · ' + flipCost + ' of ' + wallet);
+      'Second chance · ' + flipCost + ' of ' + wallet);
   }
   // Second chance: spend coins, call heads or tails, watch a real toss.
   function openFlip() {
@@ -338,10 +332,7 @@
   }
   function landscape(time) {
     const width = engine.width, height = engine.height, floor = engine.floor;
-    const gradient = ctx.createLinearGradient(0, 0, 0, height);
-    gradient.addColorStop(0, engine.score >= 20 ? '#151e34' : '#0b1827');
-    gradient.addColorStop(0.75, '#162f3d'); gradient.addColorStop(1, '#21434a');
-    ctx.fillStyle = gradient; ctx.fillRect(0, 0, width, height);
+    ctx.fillStyle = engine.score >= 20 ? '#0d1a52' : '#0e2260'; ctx.fillRect(0, 0, width, height);   // flat sky
     for (let i = 0; i < 38; i++) {
       const x = (i * 139.7 + 37) % (width + 60), y = 26 + (i * 53.1) % (height * 0.64);
       const alpha = reducedMotion.matches ? 0.2 : 0.2 + Math.sin(time * 0.5 + i) * 0.07;
@@ -369,9 +360,7 @@
     const top = pipe.center - pipe.gap / 2, bottom = pipe.center + pipe.gap / 2;
     ctx.save(); ctx.globalAlpha = alpha;
     for (const rect of [{ y: 0, h: top, cap: top - 15 }, { y: bottom, h: engine.floor - bottom, cap: bottom }]) {
-      const fill = ctx.createLinearGradient(pipe.x, 0, pipe.x + pipe.w, 0);
-      fill.addColorStop(0, '#1c4b50'); fill.addColorStop(0.45, '#2a6262'); fill.addColorStop(1, '#133e45');
-      ctx.fillStyle = fill; ctx.fillRect(pipe.x, rect.y, pipe.w, rect.h);
+      ctx.fillStyle = '#235558'; ctx.fillRect(pipe.x, rect.y, pipe.w, rect.h);
       ctx.fillStyle = '#71c1ad'; ctx.fillRect(pipe.x, rect.y, 2, rect.h);
       ctx.fillStyle = '#102f37'; ctx.fillRect(pipe.x + pipe.w - 5, rect.y, 5, rect.h);
       ctx.fillStyle = '#315f5e'; ctx.fillRect(pipe.x - 5, rect.cap, pipe.w + 10, 15);
@@ -382,7 +371,7 @@
       ctx.lineTo(pipe.x + 15, rect.y + 23 + length);
       ctx.lineTo(pipe.x + 26, rect.y + 23 + length); ctx.stroke();
       if (rect.h > 65) {
-        ctx.fillStyle = '#99c7b17d'; ctx.font = '11px monospace'; ctx.textAlign = 'center';
+        ctx.fillStyle = '#99c7b17d'; ctx.font = '14px "Patrick Hand", cursive'; ctx.textAlign = 'center';
         ctx.fillText('</>', pipe.x + pipe.w / 2, rect.y === 0 ? top - 30 : bottom + 41);
       }
     }
@@ -400,15 +389,13 @@
     ctx.fillStyle = colors[0];
     ctx.beginPath(); ctx.ellipse(edge, 0, width, r, 0, 0, Math.PI * 2); ctx.fill();
     ctx.fillRect(Math.min(0, edge), -r, Math.abs(edge), r * 2);
-    const face = ctx.createLinearGradient(-width, -r, width, r);
-    face.addColorStop(0, colors[2]); face.addColorStop(0.45, colors[1]); face.addColorStop(1, colors[3]);
-    ctx.fillStyle = face;
+    ctx.fillStyle = colors[1];
     ctx.beginPath(); ctx.ellipse(0, 0, width, r, 0, 0, Math.PI * 2); ctx.fill();
     ctx.strokeStyle = colors[0] + 'aa'; ctx.lineWidth = 1.2;
     ctx.beginPath(); ctx.ellipse(0, 0, width * 0.7, r * 0.7, 0, 0, Math.PI * 2); ctx.stroke();
     if (Math.abs(turn) > 0.3) {
       ctx.scale(Math.abs(turn), 1);
-      ctx.fillStyle = colors[0]; ctx.font = '700 ' + Math.round(r * 1.05) + 'px ' + 'Segoe UI, Arial, sans-serif';
+      ctx.fillStyle = colors[0]; ctx.font = '700 ' + Math.round(r * 1.05) + 'px ' + '"Patrick Hand", cursive';
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       ctx.fillText(gem ? '✦' : front ? '4' : 'M', 0, 1);
     }
@@ -484,7 +471,7 @@
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     for (const p of popups) {
       ctx.globalAlpha = Math.min(1, p.life * 2.5);
-      ctx.font = '700 ' + (p.gem ? 15 : 12) + 'px ui-monospace, Consolas, monospace';
+      ctx.font = '700 ' + (p.gem ? 20 : 16) + 'px "Patrick Hand", cursive';
       ctx.fillStyle = p.gem ? '#8ff0e4' : '#ffe2a0';
       ctx.fillText(p.text, p.x, p.y);
     }
@@ -494,9 +481,9 @@
       ctx.fillStyle = '#0a192366'; ctx.fillRect(0, 0, engine.width, engine.height);
       ctx.strokeStyle = '#ffe3a1'; ctx.lineWidth = 3;
       ctx.beginPath(); ctx.arc(engine.width / 2, engine.height * 0.42, 44, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * part); ctx.stroke();
-      ctx.fillStyle = '#ffe3a1'; ctx.font = '600 46px Segoe UI, Arial, sans-serif';
+      ctx.fillStyle = '#ffe3a1'; ctx.font = '600 56px "Patrick Hand", cursive';
       ctx.fillText(String(Math.min(3, number)), engine.width / 2, engine.height * 0.42 + 2);
-      ctx.font = '11px ui-monospace, Consolas, monospace'; ctx.fillStyle = '#c9dcd9';
+      ctx.font = '14px "Patrick Hand", cursive'; ctx.fillStyle = '#c9dcd9';
       ctx.fillText('GET READY TO FLAP', engine.width / 2, engine.height * 0.42 + 72);
     }
     ctx.restore();
@@ -513,9 +500,9 @@
       if (engine.state === 'ready' && !reducedMotion.matches) idleTime += dt;
       render(engine.elapsed + idleTime + engine.overElapsed, dt);
       setText('score', pad(engine.score));
-      setText('streak-value', engine.streak >= 2 ? 'PERFECT STREAK x' + engine.streak : 'ONE GAP. ONE POINT.');
+      setText('streak-value', engine.streak >= 2 ? 'PERFECT x' + engine.streak : '');
       const award = medal(engine.score);
-      setText('next-medal', award.next ? (award.next - engine.score) + ' TO ' + medal(award.next).name : 'PLATINUM WINGS');
+      setText('next-medal', award.next ? (award.next - engine.score) + ' TO ' + medal(award.next).name : 'PLATINUM');
       if (engine.state === 'over') $('restart-button').disabled = !engine.canRestart;
       if (engine.state !== 'paused') toastRemaining = Math.max(0, toastRemaining - dt);
       if (toastRemaining === 0) $('game-toast').hidden = true;

@@ -86,6 +86,6 @@ that needs a real server, storage and abuse protection).
 | Doom stays on loading screen | `.wasm` served with wrong MIME; blocked by a proxy |
 | Game ignores keys | iframe not focused; click the game once |
 | No sound | autoplay policy — needs a click/tap first |
-| Python port stuck loading | pygbag runtime CDN unreachable (offline LAN) |
+| Python game stuck loading | open the browser console; a 404 under `/pygbag/` means the mirror is incomplete: run `node scripts/mirror-pygbag.cjs --force` (online). Opening via `localhost` is redirected to `127.0.0.1` on purpose (pygbag dev-mode quirk) |
 | Scores "disappeared" | different origin/port/hostname = different localStorage |
 | Menu shows stale list | `hub/games.json` not rebuilt: `npm run build-registry` |

@@ -1,0 +1,60 @@
+/* InfoM4th Arcade: "Notebook Paper" style.
+ * Graph paper, hand-drawn wobbly boxes, pencil blue ink, red margin line. Flat colours only (no gradients).
+ * Light = the paper notebook; dark (system setting) = the same notebook at night. */
+@import url("/shared/fonts.css");
+:root {
+  color-scheme: light dark;
+  --hand: "Patrick Hand", "Comic Sans MS", cursive;
+  --title: "Gaegu", "Patrick Hand", cursive;
+  --pixel: var(--hand); --sans: var(--hand); --mono: var(--hand);   /* older names some pages still use */
+
+  --paper: #fbfaf4; --card: #ffffff; --ink: #1d3b8f; --ink-soft: #4a5f99; --ink-faint: #8796c2;
+  --red: #f25c54; --blue: #2d6bff; --on-blue: #ffffff; --hl: #ffec99; --grid: #d9e2f5; --shadow: #1d3b8f22;
+  --grid-bg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath d='M24 0H0V24' fill='none' stroke='%23d9e2f5' stroke-width='1'/%3E%3C/svg%3E");
+
+  /* hand-drawn corner radii */
+  --wob-1: 255px 15px 225px 15px / 15px 225px 15px 255px;
+  --wob-2: 15px 255px 15px 225px / 225px 15px 255px 15px;
+  --wob-3: 225px 15px 255px 15px / 15px 255px 15px 225px;
+  --wob-4: 200px 12px 180px 12px / 12px 180px 12px 200px;
+
+  /* kept for pages that still reference the previous token names */
+  --bg: var(--paper); --panel: var(--card); --text: var(--ink); --muted: var(--ink-soft); --faint: var(--ink-faint);
+  --line: var(--ink); --line-soft: var(--grid); --yellow: var(--hl); --pink: var(--red); --green: #12936a;
+  --key-face: var(--card); --key-line: var(--ink); --key-hi: transparent; --key-lo: transparent; --key-edge: var(--ink);
+  --blue-hi: var(--blue); --blue-edge: var(--ink);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #10182e; --card: #16213f; --ink: #dbe5ff; --ink-soft: #a5b5e0; --ink-faint: #6f80b3;
+    --red: #ff7b73; --blue: #5b8cff; --on-blue: #0b1430; --hl: #6b5a12; --grid: #1c2849; --shadow: #00000055;
+    --grid-bg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath d='M24 0H0V24' fill='none' stroke='%231c2849' stroke-width='1'/%3E%3C/svg%3E");
+    --green: #4fd8a4;
+  }
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { background: var(--paper); }
+body { margin: 0; font: 20px/1.4 var(--hand); color: var(--ink); background-color: var(--paper); background-image: var(--grid-bg); }
+h1, h2, h3 { font-family: var(--title); font-weight: 700; line-height: 1.1; }
+a { color: inherit; text-decoration: none; }
+button, input, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 3px dashed var(--red); outline-offset: 3px; }
+[hidden] { display: none !important; }
+
+/* pencil buttons */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 4px 18px; min-height: 44px;
+  font: 700 22px/1.1 var(--title); color: var(--ink); background: var(--card); border: 2px solid var(--ink);
+  border-radius: var(--wob-1); box-shadow: 3px 4px 0 var(--ink); cursor: pointer; white-space: nowrap; transition: transform .1s, box-shadow .1s;
+}
+.btn:hover { transform: rotate(-1.5deg); }
+.btn:active { transform: translate(3px, 4px); box-shadow: 0 0 0 var(--ink); }
+.btn-play, .btn-run, .btn.primary { background: var(--blue); color: var(--on-blue); }
+.btn-ghost { background: var(--card); }
+.btn-small { min-height: 34px; padding: 2px 12px; font-size: 18px; }
+.btn-big { min-height: 54px; padding: 8px 28px; font-size: 26px; }
+.btn:disabled { opacity: .55; cursor: default; transform: none; }
+.panel { background: var(--card); border: 2px solid var(--ink); border-radius: var(--wob-1); padding: 20px 22px; }
+kbd { display: inline-block; padding: 0 8px; font: inherit; background: var(--card); border: 2px solid var(--ink); border-radius: 6px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }

@@ -1,0 +1,44 @@
+/* 10. Notebook Paper: graph-paper background (SVG), hand-drawn wobbly boxes, pencil blue, red margin line. */
+body { font: 20px/1.4 "Patrick Hand", cursive; background-color: #fbfaf4; color: #1d3b8f;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath d='M24 0H0V24' fill='none' stroke='%23d9e2f5' stroke-width='1'/%3E%3C/svg%3E"); }
+h1, h2, h3, .logo-text, .btn, .cover-title, .game-title { font-family: Gaegu, cursive; font-weight: 700; }
+.site-head { border-bottom: 2px solid #f25c54; }
+.logo-mark { border: 2px solid #1d3b8f; border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px; }
+.logo-text { font-size: 30px; } .logo-text b { color: #f25c54; font-weight: 700; }
+.nav a.active { text-decoration: underline wavy #f25c54; text-underline-offset: 6px; }
+.search { border: 2px solid #1d3b8f; border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px; background: #fff; }
+.avatar { border: 2px solid #1d3b8f; border-radius: 50% 45% 55% 48%; }
+.btn { border: 2px solid #1d3b8f; border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px; background: #fff; color: #1d3b8f; box-shadow: 3px 4px 0 #1d3b8f; font-size: 22px; padding: 4px 18px; }
+.btn:hover { transform: rotate(-1.5deg); }
+.btn-play, .btn-run { background: #2d6bff; color: #fff; }
+.layout { border-left: 2px solid #f25c5466; margin-left: clamp(16px, 4vw, 60px); }
+.filters h3 { font-size: 24px; text-decoration: underline; }
+.filters li { font-size: 18px; }
+.featured { border: 2px solid #1d3b8f; border-radius: 15px 255px 15px 225px / 225px 15px 255px 15px; background: #fff; transform: rotate(-.4deg); }
+.featured-cover { margin: 12px; border-radius: 12px 200px 12px 180px / 180px 12px 200px 12px; }
+.featured-body h2 { font-size: 46px; }
+.eyebrow { color: #f25c54; font-size: 16px; }
+.browse-head h1 { font-size: 46px; }
+.chip { border: 2px solid #1d3b8f88; border-radius: 20px; } .chip.active { background: #ffec99; border-color: #1d3b8f; }
+.card { background: #fff; border: 2px solid #1d3b8f; padding: 10px; border-radius: 225px 15px 255px 15px / 15px 255px 15px 225px; box-shadow: 3px 5px 0 #1d3b8f22; }
+.card:nth-child(3n+1) { transform: rotate(-.7deg); } .card:nth-child(3n+2) { transform: rotate(.5deg); }
+.cover { border-radius: 200px 12px 180px 12px / 12px 180px 12px 200px; border: 2px solid #1d3b8f; }
+.cover-title { font-size: 24px; }
+.badge { background: #ffec99; color: #1d3b8f; border: 1.5px solid #1d3b8f; border-radius: 10px; font-size: 15px; }
+.card-title { font-size: 26px; font-family: Gaegu; }
+.card-desc { color: #4a5f99; }
+.tag { border-bottom: 2px solid #f25c54; }
+.hiscore { color: #f25c54; }
+.game-banner { border-bottom: 3px solid #1d3b8f; }
+.game-title { font-size: clamp(48px, 7vw, 86px); }
+.embed { background: #fff; border: 2px solid #1d3b8f; padding: 10px; border-radius: 15px 225px 15px 255px / 255px 15px 225px 15px; }
+.embed-screen { border-radius: 10px 180px 10px 200px / 200px 10px 180px 10px; }
+.game-main h2 { font-size: 32px; text-decoration: underline wavy #f25c54; text-underline-offset: 6px; }
+.shot { border: 2px dashed #1d3b8f; border-radius: 12px; transform: rotate(-1deg); }
+kbd { border: 2px solid #1d3b8f; border-radius: 6px; background: #fff; }
+.comment .avatar { border: 2px solid #1d3b8f; }
+.panel { background: #fff; border: 2px solid #1d3b8f; border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px; padding: 20px 22px; }
+.panel h3 { font-size: 26px; }
+.scores li.me { background: #ffec99; }
+.mini-cover { border-radius: 8px; border: 1.5px solid #1d3b8f; }
+.site-foot { border-top: 2px solid #f25c54; color: #4a5f99; }

@@ -1,0 +1,45 @@
+/* 5. CRT Terminal: green phosphor, scanlines (SVG pattern), everything monospace and boxy. */
+body { font: 22px/1.35 VT323, monospace; background-color: #020a02; color: #33ff66; text-shadow: 0 0 4px #33ff6699;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='4' height='2' fill='%23000' fill-opacity='.35'/%3E%3C/svg%3E"); }
+::selection { background: #33ff66; color: #020a02; }
+h1, h2, h3 { font-weight: 400; text-transform: uppercase; }
+.site-head { border-bottom: 2px solid #1a7a2e; }
+.logo-mark { border: 2px solid #33ff66; color: #33ff66; }
+.logo-text::before { content: "C:\\> "; color: #1a7a2e; } .logo-text b { font-weight: 400; color: #b6ffc8; }
+.nav a { color: #1fae45; } .nav a.active { background: #33ff66; color: #020a02; text-shadow: none; }
+.search { border: 2px solid #1a7a2e; } .search input::placeholder { color: #1a7a2e; }
+.avatar { border: 2px solid #33ff66; }
+.btn { border: 2px solid #33ff66; color: #33ff66; background: transparent; text-transform: uppercase; }
+.btn::before { content: "["; } .btn::after { content: "]"; }
+.btn:hover { background: #33ff66; color: #020a02; text-shadow: none; }
+.btn-run, .play-panel .btn-play { background: #33ff66; color: #020a02; text-shadow: none; }
+.filters h3 { color: #b6ffc8; } .filters h3::before { content: "> "; }
+.filters li { color: #1fae45; }
+.featured { border: 2px solid #33ff66; }
+.eyebrow { color: #b6ffc8; } .eyebrow::after { content: " █"; animation: crt-blink 1s steps(2) infinite; }
+@keyframes crt-blink { 50% { opacity: 0; } }
+.chip { border: 1px solid #1a7a2e; } .chip.active { border-color: #33ff66; background: #33ff6622; }
+.card { border: 2px dashed #1a7a2e; padding: 10px; }
+.card:hover { border-style: solid; border-color: #33ff66; }
+.cover-art { background: #021402; color: #33ff66; filter: grayscale(1) brightness(1.2) sepia(1) hue-rotate(60deg) saturate(4); }
+.cover-title { color: #b6ffc8; }
+.badge { border: 1px solid #33ff66; background: #020a02; }
+.card-author, .plays { color: #1fae45; } .card-desc { color: #2bdc59; }
+.tag { border: 1px solid #1a7a2e; }
+.hiscore { color: #b6ffc8; }
+.game-banner { background: #021402; color: #33ff66; border-bottom: 2px solid #33ff66; }
+.banner-glyph { filter: grayscale(1) sepia(1) hue-rotate(60deg) saturate(4); }
+.game-title::before { content: "RUN "; color: #1a7a2e; }
+.embed { border: 2px solid #33ff66; }
+.embed-screen { background: #000; color: #33ff66; }
+.embed-glyph { filter: grayscale(1) sepia(1) hue-rotate(60deg) saturate(4); }
+.embed-bar { border-top: 2px solid #1a7a2e; }
+.game-main h2::before { content: "## "; color: #1a7a2e; }
+.shot { background: #021402; color: #1fae45; border: 1px dashed #1a7a2e; }
+kbd { border: 1px solid #33ff66; }
+.comment .avatar { border: 1px solid #33ff66; }
+.panel { border: 2px solid #1a7a2e; }
+.panel h3::before { content: "> "; }
+.scores li.me { background: #33ff66; color: #020a02; text-shadow: none; }
+.mini-cover { background: #021402; border: 1px solid #1a7a2e; filter: grayscale(1) sepia(1) hue-rotate(60deg) saturate(4); }
+.site-foot { border-top: 2px solid #1a7a2e; color: #1a7a2e; }

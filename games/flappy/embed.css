@@ -1,0 +1,52 @@
+/* Embedded layout + Notebook Paper look (tokens from /shared/theme.css). Loaded after styles.css.
+ * The page is just the game, filling its frame. The game stage keeps its night sky; the bars around it are paper. */
+html, body { height: 100%; margin: 0; overflow: hidden; }
+body { font-family: var(--hand); background-color: var(--paper); background-image: var(--grid-bg); color: var(--ink); }
+:root { --sans: var(--hand); --mono: var(--hand); }
+.page-shell { width: 100%; max-width: none; height: 100dvh; margin: 0; }
+main { height: 100%; }
+.arcade { height: 100%; display: flex; flex-direction: column; border: 0; border-radius: 0; box-shadow: none; background: transparent; }
+.arcade-bar { height: 58px; flex: none; padding: 0 16px; background: transparent; border-bottom: 2px solid var(--red); }
+.arcade-bar h2 { font: 700 26px var(--title); letter-spacing: .04em; color: var(--ink); }
+.tiny-cross { color: var(--red); }
+.arcade-bottom { flex: none; min-height: 64px; padding: 10px 16px 14px; background: transparent; border-top: 2px solid var(--red); }
+.game-stage { flex: 1 1 auto; height: auto !important; min-height: 0; background: #0e2260; }
+.game-overlay { background: #0b153866; }
+.pause-overlay, .end-overlay { background: #0b1538e0; }
+.overlay-content h3 { margin: 0 0 20px; font: 700 52px/1 var(--title); color: #fff; }
+.overlay-content h3 span { color: #ffec99; }
+.game-guide, .overlay-kicker:empty { display: none; }
+.overlay-kicker { font: 400 20px var(--hand); letter-spacing: .08em; color: #ffec99; }
+.result-line { font: 400 22px var(--hand); color: #dbe5ff; margin-bottom: 14px; }
+.result-line > span:first-child { color: #ffec99; }
+.start-hint { font: 400 19px var(--hand); color: #b9c7ef; margin-top: 16px; }
+.live-indicator { font: 400 18px var(--hand); color: #b9c7ef; }
+.score-label { font: 400 16px var(--hand); letter-spacing: .08em; color: #b9c7ef; }
+.score-value { font: 700 34px var(--title); color: #fff; }
+.best-score { color: #b9c7ef; }
+.coin-score .score-value { color: #ffd43b; }
+.flight-hud { font: 400 18px var(--hand); color: #dbe5ff; }
+.game-toast { font: 700 22px var(--title); color: #1d3b8f; background: #ffec99; border: 2px solid #1d3b8f; border-radius: var(--wob-1); box-shadow: 3px 4px 0 #1d3b8f; }
+.flight-medal { font: 400 19px var(--hand); padding: 4px 14px; }
+.control-hints { font: 400 19px var(--hand); color: var(--ink-soft); gap: 14px; }
+.control-hints > span { gap: 10px; }
+.coin-icon { background: #ffd43b; box-shadow: inset 0 0 0 2px #a07900; }
+.coin-face { background: #ffd43b !important; }
+.coin-tails { background: #f2b800 !important; }
+
+/* pencil buttons (same recipe as .btn in theme.css) */
+.primary-button, .chance-button, .jump-button, .icon-button {
+  font: 700 24px/1.1 var(--title); color: #1d3b8f; background: #fff; border: 2px solid #1d3b8f; border-radius: var(--wob-1);
+  box-shadow: 3px 4px 0 #1d3b8f; transform: none; transition: transform .1s, box-shadow .1s;
+}
+.primary-button { min-height: 54px; padding: 6px 28px; background: #2d6bff; color: #fff; gap: 14px; }
+.primary-button:hover:not(:disabled), .chance-button:hover:not(:disabled), .jump-button:hover, .icon-button:hover:not(:disabled) { transform: rotate(-1.5deg); background-color: inherit; }
+.primary-button:hover:not(:disabled) { background: #2d6bff; }
+.primary-button:active:not(:disabled), .chance-button:active:not(:disabled), .jump-button:active, .icon-button:active:not(:disabled) { transform: translate(3px, 4px); box-shadow: 0 0 0 #1d3b8f; }
+.chance-button, .jump-button { min-height: 46px; padding: 4px 18px; font-size: 21px; }
+.icon-button { width: 44px; height: 42px; color: var(--ink); background: var(--card); border-color: var(--ink); box-shadow: 3px 4px 0 var(--ink); }
+.icon-button svg { width: 22px; height: 22px; }
+.tool-divider { background: var(--grid); }
+.jump-button { color: var(--ink); background: var(--card); border-color: var(--ink); box-shadow: 3px 4px 0 var(--ink); }
+kbd { font: 400 18px var(--hand); min-width: 28px; padding: 0 8px; color: var(--ink); background: var(--card); border: 2px solid var(--ink); border-radius: 6px; }
+@media (max-width: 760px) { .arcade-bar { padding: 0 12px; } .overlay-content h3 { font-size: 40px; } .score-value { font-size: 26px; } }

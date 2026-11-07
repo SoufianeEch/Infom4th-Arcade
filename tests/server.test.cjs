@@ -7,7 +7,7 @@ const { createApp } = require('../server/serve.cjs');
 
 async function boot(opts = {}) {
   const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'arcade-test-'));
-  const server = createApp({ dataDir, ...opts });
+  const server = createApp({ dataDir, pygbagUpstream: null, ...opts });
   await new Promise(r => server.listen(0, '127.0.0.1', r));
   const base = `http://127.0.0.1:${server.address().port}`;
   const post = (body) => fetch(base + '/api/scores', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: typeof body === 'string' ? body : JSON.stringify(body) });
@@ -17,7 +17,7 @@ async function boot(opts = {}) {
 test('lists games and serves hub + game files', async () => {
   const a = await boot();
   const games = await (await fetch(a.base + '/api/games')).json();
-  assert.deepEqual(games.map(g => g.id), ['flappy', 'doom', 'code-snake']);
+  assert.deepEqual(games.map(g => g.id), ['flappy', 'doom', 'code-snake', 'flashcard-sniper', 'type-race']);
   assert.equal((await fetch(a.base + '/')).status, 200);
   assert.equal((await fetch(a.base + '/games/flappy/index.html')).status, 200);
   const wasm = await fetch(a.base + '/games/doom/runtime/websockets-doom.wasm', { method: 'HEAD' });
@@ -82,6 +82,8 @@ test('rejects bad submissions', async () => {
     { game: 'nope', name: 'A', score: 1 },
     { game: 'doom', name: 'A', score: 1 },                 // scoring disabled
     { game: 'flappy', name: '', score: 1 },
+    { game: 'flappy', name: 'ANON', score: 1 },               // the old default name is not allowed
+    { game: 'flappy', name: 'guest', score: 1 },
     { game: 'flappy', name: '<script>', score: 1 },
     { game: 'flappy', name: 'A'.repeat(13), score: 1 },
     { game: 'flappy', name: 'A', score: 0 },
@@ -103,4 +105,52 @@ test('rate limits score submissions per client', async () => {
   for (let i = 0; i < 12; i++) last = await a.post({ game: 'flappy', name: 'Spam', score: i + 1 });
   assert.equal(last.status, 429);
   await a.close();
+});
+
+test('self-hosted pygbag runtime: every file the browser requests is served locally (no internet)', async () => {
+  const a = await boot();
+  const { FILES } = require('../server/pygbag.cjs');
+  for (const rel of FILES) {
+    const r = await fetch(`${a.base}/pygbag/${rel}`);
+    assert.equal(r.status, 200, rel);
+    await r.arrayBuffer();
+  }
+  const wasm = await fetch(`${a.base}/pygbag/cdn/0.9.3/cpython312/main.wasm`, { method: 'HEAD' });
+  assert.equal(wasm.headers.get('content-type'), 'application/wasm');
+  const index = await (await fetch(`${a.base}/pygbag/cdn/index-0.9.3-cp312.json`)).json();
+  assert.equal(index['-CDN-'], '/pygbag/cdn/');                       // packages come from our server, not the public CDN
+  await a.close();
+});
+
+test('built Python games reference the local runtime, never the public CDN', () => {
+  const games = path.join(__dirname, '../games');
+  for (const id of fs.readdirSync(games)) {
+    const page = path.join(games, id, 'web/index.html');
+    if (!fs.existsSync(page)) continue;
+    const html = fs.readFileSync(page, 'utf8');
+    assert.ok(!html.includes('pygame-web.github.io'), id);
+    assert.ok(html.includes('/pygbag/cdn/0.9.3/pythons.js'), id);
+  }
+});
+
+test('pygbag route rejects traversal and unknown paths; downloads a missing file once when allowed', async () => {
+  const a = await boot();
+  for (const p of ['/pygbag/../server/serve.cjs', '/pygbag/cdn/../../server/serve.cjs', '/pygbag/%2e%2e/package.json', '/pygbag/etc/passwd', '/pygbag/cdn/nope.js']) {
+    const r = await fetch(a.base + p);
+    assert.ok([403, 404].includes(r.status), `${p} -> ${r.status}`);
+  }
+  await a.close();
+
+  const http = require('node:http');
+  let hits = 0;
+  const up = http.createServer((req, res) => { hits++; res.end('fake-' + req.url); });
+  await new Promise(r => up.listen(0, '127.0.0.1', r));
+  const b = await boot({ pygbagUpstream: `http://127.0.0.1:${up.address().port}` });
+  assert.equal(await (await fetch(b.base + '/pygbag/cdn/extra/thing.js')).text(), 'fake-/cdn/extra/thing.js');
+  assert.equal(await (await fetch(b.base + '/pygbag/cdn/extra/thing.js')).text(), 'fake-/cdn/extra/thing.js');
+  assert.equal(hits, 1, 'second request is served from the cache');
+  assert.equal((await fetch(b.base + '/pygbag/other/thing.js')).status, 404);   // only /cdn and /archives are proxied
+  assert.equal(hits, 1);
+  await b.close();
+  await new Promise(r => { up.close(r); up.closeAllConnections(); });
 });

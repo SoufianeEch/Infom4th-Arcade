@@ -1,0 +1,34 @@
+{
+  "id": "type-race",
+  "title": "Python Type Race",
+  "tagline": "Type the snippet exactly. One clock, one personal best. (Python / pygame)",
+  "entry": "web/index.html",
+  "order": 50,
+  "tech": "python-pygbag",
+  "controls": {
+    "keyboard": "Type the code, Enter new line, R retry, Esc menu",
+    "touch": "Not supported (needs a keyboard)"
+  },
+  "scoring": {
+    "enabled": true,
+    "label": "score",
+    "max": 20000
+  },
+  "aspect": "1000/640",
+  "tags": [
+    "python",
+    "typing"
+  ],
+  "short": "TYPE",
+  "glyph": "⌨️",
+  "genre": "Typing",
+  "madeWith": "Python",
+  "description": "Type a real Python snippet exactly as shown. Indentation fills itself in, wrong keys only cost accuracy. Your score combines speed and accuracy.",
+  "theme": {
+    "bg": "#eef3ff",
+    "fg": "#0a1a52",
+    "accent": "#1f5cff",
+    "accentFg": "#ffffff",
+    "soft": "#dbe6ff"
+  }
+}

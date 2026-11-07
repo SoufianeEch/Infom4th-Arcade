@@ -9,7 +9,7 @@
     "check": "node scripts/check.cjs",
     "test": "node --test tests/ games/*/tests/",
     "build:py": "bash scripts/build-python-games.sh",
-    "test:py": ".venv/bin/python -m unittest discover -s games/code-snake/tests"
+    "test:py": "bash scripts/test-python.sh"
   },
   "engines": {
     "node": ">=20"

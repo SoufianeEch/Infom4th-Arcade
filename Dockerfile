@@ -6,6 +6,7 @@ COPY server ./server
 COPY hub ./hub
 COPY shared ./shared
 COPY games ./games
+COPY vendor ./vendor
 # Scores live in /data; mount a volume there so they survive container rebuilds.
 RUN mkdir -p /data && chown node:node /data
 VOLUME ["/data"]

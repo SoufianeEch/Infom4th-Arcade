@@ -1,0 +1,10 @@
+/* The lab switcher bar. Kept neutral and isolated from the style being previewed. */
+#lab-bar { all: initial; position: fixed; left: 50%; bottom: 14px; transform: translateX(-50%); z-index: 9999; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center;
+  max-width: calc(100vw - 20px); padding: 8px 12px; background: #111; color: #eee; border: 1px solid #444; border-radius: 12px; box-shadow: 0 8px 30px #0008; font: 13px/1.2 system-ui, sans-serif; }
+#lab-bar * { font: inherit; color: inherit; letter-spacing: normal; text-transform: none; text-shadow: none; }
+#lab-bar a { color: #9cf; text-decoration: none; padding: 4px 6px; }
+#lab-bar label { display: inline-flex; align-items: center; gap: 4px; color: #aaa; }
+#lab-bar select, #lab-bar button { background: #222; color: #fff; border: 1px solid #555; border-radius: 6px; padding: 4px 8px; cursor: pointer; box-shadow: none; min-height: 0; }
+#lab-bar .lab-tip { color: #777; }
+@media (max-width: 700px) { #lab-bar .lab-tip { display: none; } }
+body { padding-bottom: 90px !important; }

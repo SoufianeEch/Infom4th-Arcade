@@ -113,3 +113,13 @@ reusing Flappy's component styles. Python ports that want Geist Pixel can reuse 
 Git: one repo for everything, one commit history per game via path-scoped commits
 (`games/flappy/...`). Nothing needs submodules. The two existing repos' history
 (`infom4th-doom`, `infom4th-game`) can be kept by `git subtree add` if you want it; default is a clean copy.
+
+## Styling (v0.3, v0.4)
+- Fonts: DotGothic16 (`shared/fonts.css`). Blue/white palette with dark+light tokens in `shared/theme.css` (follows `prefers-color-scheme`). Flat colours only (no gradients); buttons are 3D keycaps (`.key`).
+- Players must type a name before playing; no default name (server rejects ANON/guest/player...).
+- Tokens + base rules: `shared/theme.css` (hub links it; game pages keep their own copy of the same palette so they run standalone).
+- Hub: `hub/arcade.css`. Game pages embedded in the hub should contain only the game (no site header/footer/marketing copy) and fill their frame.
+- Manifest fields used by the hub: `accent` (card tile colour), `aspect` (`"w/h"`, play-frame shape), `tags`, `thumb` (optional image).
+
+## Styling (v0.6, current)
+Notebook Paper, ported from `design-lab/styles/paper.css`: Gaegu + Patrick Hand, paper tokens and pencil buttons in `shared/theme.css`, hub layout in `hub/arcade.css`. Per-game page colours come from each manifest's `theme`. The v0.3-v0.5 notes above are history.

@@ -1,0 +1,34 @@
+{
+  "id": "flashcard-sniper",
+  "title": "Flashcard Sniper",
+  "tagline": "Aim your scope and shoot the right answer to the Python question. (Python / pygame)",
+  "entry": "web/index.html",
+  "order": 40,
+  "tech": "python-pygbag",
+  "controls": {
+    "keyboard": "Mouse to aim, click to shoot, Esc menu",
+    "touch": "Touch to aim and shoot"
+  },
+  "scoring": {
+    "enabled": true,
+    "label": "points",
+    "max": 100000
+  },
+  "aspect": "960/600",
+  "tags": [
+    "python",
+    "quiz"
+  ],
+  "short": "SNIPER",
+  "glyph": "🎯",
+  "genre": "Quiz",
+  "madeWith": "Python",
+  "description": "A Python question appears at the top while answer cards drift across the screen. Aim your scope and shoot the right one before time runs out. Faster shots score more.",
+  "theme": {
+    "bg": "#141a3a",
+    "fg": "#fff8e6",
+    "accent": "#ffb02e",
+    "accentFg": "#2b1a00",
+    "soft": "#222a55"
+  }
+}

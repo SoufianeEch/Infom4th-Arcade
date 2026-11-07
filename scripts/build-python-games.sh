@@ -17,10 +17,17 @@ if [ ${#ids[@]} -eq 0 ]; then
 fi
 for id in "${ids[@]}"; do
   echo "== building $id"
+  [ -f "games/$id/src/arcade_web.py" ] && cp shared/python/arcade_web.py "games/$id/src/arcade_web.py"
   rm -rf "games/$id/src/build" "games/$id/web"
   "$PYGBAG" --build "games/$id/src" > "games/$id/src/.build.log" 2>&1 || { tail -20 "games/$id/src/.build.log"; exit 1; }
   mkdir -p "games/$id/web"
   cp "games/$id/src/build/web/"* "games/$id/web/"
+  # load the runtime from our own server (/pygbag/, see scripts/mirror-pygbag.cjs) instead of the public CDN
+  sed -i 's#https://pygame-web.github.io/#/pygbag/#g' "games/$id/web/index.html"
+  # match the arcade look: dark page background, real title instead of "src"
+  title="$(python3 -c "import json,sys;print(json.load(open('games/$id/manifest.json')).get('title','$id'))")"
+  sed -i "s#<title>src</title>#<title>${title}</title>#; s#</head>#<style>html,body{margin:0;background:\#fbfaf4}</style></head>#" "games/$id/web/index.html"
+  ! grep -q "pygame-web.github.io" "games/$id/web/index.html" || { echo "CDN reference left in games/$id/web/index.html"; exit 1; }
   rm -rf "games/$id/src/build" "games/$id/src/.build.log"
   echo "   -> games/$id/web/ ($(du -sh "games/$id/web" | cut -f1))"
 done

@@ -7,3 +7,5 @@ data/*
 __pycache__/
 games/*/src/build/
 games/*/src/.build.log
+games/*/src/best.json
+games/*/src/highscores_snake.json

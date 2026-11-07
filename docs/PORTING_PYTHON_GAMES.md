@@ -80,3 +80,9 @@ Zero effort but breaks the "other users via the web" goal. Only for games we dec
 - [ ] First load size and time on LAN recorded (target: playable in < 5 s on Wi-Fi)
 - [ ] Works with the internet disconnected (or the CDN limitation is documented)
 - [ ] Desktop version still runs with `python main.py` (one codebase)
+
+---
+## Status (2026-11-07)
+Decision made: **games stay Python, built with pygbag** (Option A). Option B was rejected. All three pygame games are in
+`games/*/src/main.py`; build with `npm run build:py`. The pygbag runtime is **self-hosted** in `vendor/pygbag/` (served at
+`/pygbag/`), so the "CDN note" above no longer applies: no internet is needed. See `PROGRESS.md` for what is verified.

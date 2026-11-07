@@ -4,30 +4,23 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0b111a">
-  <meta name="description" content="InfoM4th is getting an upgrade. Take a coding break with our tiny origami-bird flight game.">
   <meta name="robots" content="noindex, nofollow">
-  <title>InfoM4th — A little downtime. A little airtime.</title>
+  <title>InfoM4th Flappy</title>
   <link rel="icon" href="./assets/infom4th-logo.png" type="image/png">
+  <meta name="color-scheme" content="light dark">
+  <link rel="stylesheet" href="/shared/theme.css">
   <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./embed.css">
   <script defer src="./config.js"></script>
   <script defer src="./engine.js"></script>
   <script defer src="./game.js"></script>
 </head>
 <body>
 <div class="page-shell">
-  <header class="site-header">
-    <a class="brand" href="./" aria-label="InfoM4th maintenance home"><img src="./assets/infom4th-logo.png" alt="" width="40" height="40"><span>InfoM<span class="brand-four">4</span>th<span class="brand-dot">.</span></span></a>
-    <div class="maintenance-label"><span class="status-dot" aria-hidden="true"></span><span>Maintenance mode</span></div>
-  </header>
   <main>
-    <section class="intro" aria-labelledby="page-title">
-      <p class="eyebrow"><span aria-hidden="true">//</span> A SMALL BREAK. A BETTER INFOM4TH.</p>
-      <h1 id="page-title">A little downtime.<br>A little <span class="airtime">airtime<span class="airtime-dot">.</span></span></h1>
-      <p class="intro-copy" id="maintenance-message">We’re making room for what’s next.<br>While we work behind the scenes, take our bird for a flight.</p>
-    </section>
     <section id="arcade" class="arcade" aria-labelledby="game-title">
       <div class="arcade-bar">
-        <div class="arcade-title"><span class="tiny-cross" aria-hidden="true">&#10022;</span><h2 id="game-title">INFOM4TH FLAPPY</h2><span class="version-label">03</span></div>
+        <div class="arcade-title"><span class="tiny-cross" aria-hidden="true">&#10022;</span><h2 id="game-title">FLAPPY</h2></div>
         <div class="game-tools">
           <button class="icon-button" id="sound-button" type="button" aria-label="Enable game sound" aria-pressed="false" title="Enable sound"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path class="sound-off" d="m16 9 5 6m0-6-5 6"/><path class="sound-on" d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/></svg></button>
           <span class="tool-divider" aria-hidden="true"></span>
@@ -44,44 +37,39 @@
         <div class="stage-vignette" aria-hidden="true"></div>
         <div class="game-toast" id="game-toast" hidden></div>
         <div class="game-overlay" id="ready-overlay"><div class="overlay-content">
-          <span class="overlay-kicker">ONE TAP. ONE MORE TRY.</span>
-          <h3>Less waiting.<br>More <span>winging it.</span></h3><p class="game-guide">Tap to fly. Slip through the gaps. Grab the coins.<br>Crashed? Flip one for a second chance.</p>
-          <button class="primary-button" id="start-button" type="button">Let’s fly <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
-          <p class="start-hint"><span class="keyboard-start">or press <kbd>SPACE</kbd> to start</span><span class="touch-start">or tap the game to start</span></p>
+          <h3>Flappy</h3>
+          <button class="primary-button" id="start-button" type="button">Play <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
+          <p class="start-hint"><span class="keyboard-start">or press <kbd>SPACE</kbd></span><span class="touch-start">or tap the game</span></p>
         </div></div>
         <div class="game-overlay pause-overlay" id="pause-overlay" hidden><div class="overlay-content">
-          <span class="overlay-kicker">NO RUSH</span><h3>Catch your<br><span>breath.</span></h3>
-          <button class="primary-button" id="resume-button" type="button">Keep flying <span aria-hidden="true">&rarr;</span></button>
-          <p class="start-hint">Your run is right where you left it.</p>
+          <h3>Paused</h3>
+          <button class="primary-button" id="resume-button" type="button">Resume <span aria-hidden="true">&rarr;</span></button>
         </div></div>
         <div class="game-overlay end-overlay" id="end-overlay" hidden><div class="overlay-content">
-          <span class="overlay-kicker" id="end-kicker">EVERY GREAT FLIGHT TAKES PRACTICE</span>
-          <h3 id="end-title">One more<br><span>little flight?</span></h3>
+          <span class="overlay-kicker" id="end-kicker"></span>
+          <h3 id="end-title">Game over</h3>
           <p class="result-line"><span id="result-score">0</span> gates <span class="result-separator">/</span> <span id="result-perfects">0</span> perfect gaps <span class="result-separator">/</span> <span class="result-coins" id="result-coins">0</span> coins</p>
           <span class="flight-medal" id="medal-value" data-medal="rookie">ROOKIE / BRONZE AT 5</span><br>
-          <div class="end-actions"><button class="primary-button" id="restart-button" type="button">Fly again <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 9a8 8 0 1 1 0 6M4 4v5h5"/></svg></button><button class="chance-button" id="chance-button" type="button"><span class="coin-icon" aria-hidden="true"></span><span id="chance-label">Flip for a second chance</span></button></div>
+          <div class="end-actions"><button class="primary-button" id="restart-button" type="button">Play again <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 9a8 8 0 1 1 0 6M4 4v5h5"/></svg></button><button class="chance-button" id="chance-button" type="button"><span class="coin-icon" aria-hidden="true"></span><span id="chance-label">Second chance</span></button></div>
           <p class="start-hint"><span class="keyboard-start">Press <kbd>SPACE</kbd> to try again</span><span class="touch-start">Tap the game to try again</span></p>
         </div></div>
         <div class="game-overlay flip-overlay" id="flip-overlay" hidden><div class="overlay-content">
-          <span class="overlay-kicker" id="flip-kicker">HEADS OR TAILS? CALL IT.</span>
+          <span class="overlay-kicker" id="flip-kicker">Heads or tails?</span>
           <div class="toss-area" aria-hidden="true"><div class="toss-coin" id="toss-coin"><div class="coin-face coin-heads"><img src="./assets/infom4th-logo.png" alt=""></div><div class="coin-face coin-tails"><span>4</span></div></div><div class="toss-shadow" id="toss-shadow"></div></div>
-          <h3 id="flip-title">Win the toss,<br><span>keep flying.</span></h3>
+          <h3 id="flip-title">Win the toss to keep flying</h3>
           <div class="flip-actions" id="flip-actions"><button class="primary-button" id="call-heads" type="button">Heads</button><button class="primary-button" id="call-tails" type="button">Tails</button></div>
           <div class="flip-actions" id="flip-after" hidden><button class="primary-button" id="flip-continue" type="button">Back</button></div>
           <p class="start-hint" id="flip-hint"><span class="keyboard-start">Press <kbd>H</kbd> or <kbd>T</kbd></span><span class="touch-start">Heads: the bird. Tails: the 4.</span></p>
         </div></div>
-        <noscript><div class="no-script">Enable JavaScript to play. InfoM4th is temporarily under maintenance.</div></noscript>
+        <noscript><div class="no-script">Enable JavaScript to play.</div></noscript>
       </div>
       <div class="arcade-bottom">
         <div class="control-hints"><span><kbd>SPACE</kbd><span>flap</span></span><span class="hint-divider desktop-control"></span><span class="desktop-control"><kbd>P</kbd><span>pause</span></span></div>
         <button class="jump-button flap-button" id="flap-button" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 19V5m-6 6 6-6 6 6"/></svg><span>Tap to flap</span></button>
-        <span class="arcade-credit">SMALL FLAPS. BIG PERSONAL BESTS.</span>
       </div>
     </section>
-    <div class="below-game"><p><span class="mini-orbit" aria-hidden="true">&#10023;</span> Find your rhythm. Thread the gaps. Make it one gate further.</p><span>NO LOGIN. JUST A LITTLE FUN.</span></div>
     <p id="game-announcement" class="sr-only" role="status" aria-live="polite"></p>
   </main>
-  <footer class="site-footer"><p>A new chapter is taking shape<span class="footer-dot">.</span></p><p>Made for curious minds. <span class="footer-brand">InfoM4th © <span id="year">2026</span></span></p></footer>
 </div>
 </body>
 </html>

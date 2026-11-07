@@ -1,0 +1,4 @@
+/* Gaegu (headings) + Patrick Hand (text): SIL OFL (see fonts/*-OFL.txt), Latin subsets, self-hosted so the arcade works offline. */
+@font-face { font-family: "Gaegu"; src: url("/shared/fonts/Gaegu-400-Latin.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Gaegu"; src: url("/shared/fonts/Gaegu-700-Latin.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "Patrick Hand"; src: url("/shared/fonts/PatrickHand-400-Latin.woff2") format("woff2"); font-weight: 400; font-display: swap; }

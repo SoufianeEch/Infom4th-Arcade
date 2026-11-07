@@ -5,6 +5,30 @@
   "entry": "web/index.html",
   "order": 30,
   "tech": "python-pygbag",
-  "controls": { "keyboard": "Arrows / WASD, P pause, Esc menu", "touch": "Swipe, tap to start" },
-  "scoring": { "enabled": true, "label": "points", "max": 100000 }
+  "controls": {
+    "keyboard": "Arrows / WASD, P pause, Esc menu",
+    "touch": "Swipe, tap to start"
+  },
+  "scoring": {
+    "enabled": true,
+    "label": "points",
+    "max": 100000
+  },
+  "aspect": "1000/640",
+  "tags": [
+    "python",
+    "puzzle"
+  ],
+  "short": "SNAKE",
+  "glyph": "🐍",
+  "genre": "Puzzle",
+  "madeWith": "Python",
+  "description": "Every phase shows a line of Python with a blank. Steer the snake into the block that fills it. Bugs, SyntaxError blocks and deadly walls join in as you go.",
+  "theme": {
+    "bg": "#062016",
+    "fg": "#e8fff3",
+    "accent": "#3ddc97",
+    "accentFg": "#03281a",
+    "soft": "#0b3323"
+  }
 }

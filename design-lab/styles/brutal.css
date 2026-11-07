@@ -1,0 +1,46 @@
+/* 6. Brutalist Blue: huge type, thick black borders, hard offset shadows, raw grid. */
+body { font: 17px/1.45 "Space Grotesk", sans-serif; background: #fff; color: #000; }
+h1, h2, h3, .logo-text, .cover-title, .btn, .game-title { font-family: "Archivo Black", sans-serif; font-weight: 400; text-transform: uppercase; }
+.site-head { border-bottom: 4px solid #000; background: #ffe600; }
+.logo-mark { background: #0038ff; color: #fff; border: 3px solid #000; }
+.logo-text { font-size: 22px; letter-spacing: -.02em; } .logo-text b { color: #0038ff; font-weight: 400; }
+.nav a { font-weight: 700; border: 3px solid transparent; } .nav a.active { border-color: #000; background: #fff; }
+.search { background: #fff; border: 3px solid #000; }
+.avatar { background: #000; color: #ffe600; }
+.btn { background: #0038ff; color: #fff; border: 3px solid #000; box-shadow: 5px 5px 0 #000; }
+.btn:hover { transform: translate(-2px, -2px); box-shadow: 7px 7px 0 #000; }
+.btn:active { transform: translate(5px, 5px); box-shadow: none; }
+.btn-ghost { background: #fff; color: #000; }
+.btn-play { background: #ffe600; color: #000; }
+.layout { gap: 0; padding: 0; max-width: none; }
+.filters { border-right: 4px solid #000; padding: 24px; }
+.filters h3 { font-family: "Archivo Black"; text-transform: uppercase; }
+.browse { padding: 24px; }
+.featured { border: 4px solid #000; box-shadow: 10px 10px 0 #0038ff; }
+.featured-body h2 { font-size: clamp(32px, 4vw, 56px); line-height: .95; }
+.eyebrow { background: #000; color: #ffe600; align-self: flex-start; padding: 2px 8px; font-weight: 700; }
+.browse-head h1 { font-size: clamp(40px, 6vw, 88px); line-height: .9; letter-spacing: -.03em; }
+.chip { border: 3px solid #000; font-weight: 700; } .chip.active { background: #000; color: #fff; }
+.grid { gap: 0; border-top: 4px solid #000; border-left: 4px solid #000; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+.card { border-right: 4px solid #000; border-bottom: 4px solid #000; padding: 14px; }
+.card:hover { background: #ffe600; }
+.cover { border: 3px solid #000; }
+.cover-title { font-size: 22px; }
+.badge { background: #fff; color: #000; border: 2px solid #000; font-weight: 700; }
+.card-title { font-size: 20px; } .card-author { font-weight: 700; color: #0038ff; }
+.tag { border: 2px solid #000; font-weight: 700; }
+.hiscore { font-weight: 700; }
+.game-banner { border-bottom: 4px solid #000; }
+.game-title { font-size: clamp(44px, 8vw, 110px); line-height: .9; letter-spacing: -.03em; }
+.embed { border: 4px solid #000; box-shadow: 12px 12px 0 #000; }
+.embed-bar { border-top: 4px solid #000; background: #fff; }
+.btn-run { box-shadow: 5px 5px 0 #000; border: 3px solid #000; }
+.game-main h2 { font-size: 34px; letter-spacing: -.02em; }
+.shot { border: 3px solid #000; }
+kbd { border: 3px solid #000; font-weight: 700; }
+.comment { border-bottom: 3px solid #000; } .comment .avatar { background: #0038ff; color: #fff; border: 3px solid #000; }
+.panel { border: 4px solid #000; box-shadow: 8px 8px 0 #000; }
+.panel h3 { font-family: "Archivo Black"; text-transform: uppercase; font-size: 20px; }
+.scores li { border-bottom: 2px solid #000; font-weight: 700; } .scores li.me { background: #ffe600; }
+.mini-cover { border: 2px solid #000; }
+.site-foot { border-top: 4px solid #000; background: #000; color: #fff; }

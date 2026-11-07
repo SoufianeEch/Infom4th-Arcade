@@ -35,6 +35,26 @@ from pathlib import Path
 
 import pygame
 
+# ---------------------------------------------------------------- fonts (DotGothic16, bundled in fonts/)
+FONT_DIR = Path(__file__).resolve().parent / "fonts"
+PIXEL_FONT = "DotGothic16-Latin.ttf"
+
+
+def _font(size):
+    try:
+        return pygame.font.Font(str(FONT_DIR / PIXEL_FONT), size)
+    except Exception:                        # missing file: fall back to pygame's built-in font
+        return pygame.font.Font(None, size)
+
+
+def ui_font(size):
+    """DotGothic16 is a pixel font: sizes that are multiples of 8 stay crisp. `size` is the old built-in-font size."""
+    return _font(max(16, round(size * 0.8 / 8) * 8))
+
+
+def mono_font(size):
+    return _font(max(16, round(size / 8) * 8))
+
 # ---------------------------------------------------------------- web (pygbag) support
 # The same file runs on the desktop (python main.py) and in the browser (pygbag).
 # Everything browser-specific is behind WEB so desktop behaviour is unchanged.
@@ -169,10 +189,9 @@ def make_tone(freq, ms, volume=0.25):
 
 
 def make_background():
+    """Flat background (no gradient)."""
     surf = pygame.Surface((W, H))
-    for y in range(H):
-        t = y / H
-        pygame.draw.line(surf, tuple(int(BG_TOP[i] + (BG_BOTTOM[i] - BG_TOP[i]) * t) for i in range(3)), (0, y), (W, y))
+    surf.fill(BG_TOP)
     return surf
 
 
@@ -212,13 +231,13 @@ class Game:
         self.canvas = pygame.Surface((W, H))
         self.clock = pygame.time.Clock()
 
-        self.f_title = pygame.font.Font(None, 96)
-        self.f_big = pygame.font.Font(None, 60)
-        self.f_mid = pygame.font.Font(None, 38)
-        self.f_small = pygame.font.Font(None, 24)
+        self.f_title = ui_font(96)
+        self.f_big = ui_font(60)
+        self.f_mid = ui_font(38)
+        self.f_small = ui_font(24)
         # system fonts do not exist in the browser build: fall back to pygame's bundled font
-        self.f_code = pygame.font.Font(None, 26) if WEB else pygame.font.SysFont("dejavusansmono,consolas,couriernew,monospace", 24)
-        self.f_foods = [pygame.font.Font(None, s) for s in (28, 24, 20, 17)]
+        self.f_code = mono_font(22)
+        self.f_foods = [ui_font(s) for s in (28, 24, 20, 17)]
 
         self.background = make_background()
         self.sounds = {}
@@ -659,8 +678,10 @@ class Game:
             fill, edge = FOOD_FILL, FOOD_EDGE
             if self.state == "clear":
                 fill, edge = ((40, 140, 85), GREEN) if food["ok"] else ((35, 40, 70), (70, 75, 110))
+            pygame.draw.rect(surf, (6, 10, 30), px.move(0, 6), border_radius=10)      # hard 3D shadow
             pygame.draw.rect(surf, fill, px, border_radius=10)
             pygame.draw.rect(surf, edge, px, width=3, border_radius=10)
+            pygame.draw.line(surf, (255, 255, 255), (px.left + 10, px.top + 5), (px.right - 10, px.top + 5), 2)   # lit top edge
             font = next((f for f in self.f_foods if f.size(food["text"])[0] <= px.w - 12), self.f_foods[-1])
             self.text(surf, food["text"], font, WHITE, px.center)
 

@@ -5,3 +5,7 @@ docs
 tests
 **/*.original.md
 *.md
+games/*/src
+games/*/tests
+.venv
+design-lab

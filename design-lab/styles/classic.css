@@ -1,0 +1,42 @@
+/* 1. Store Classic: light, dense, small type, one blue accent (indie-store feel). */
+body { font: 14px/1.5 Inter, system-ui, sans-serif; background: #f4f5f7; color: #222; }
+.site-head { background: #fff; border-bottom: 1px solid #e3e5ea; padding-top: 10px; padding-bottom: 10px; }
+.logo-mark { background: #1f5cff; color: #fff; border-radius: 6px; width: 30px; height: 30px; font-size: 15px; }
+.logo-text { font-weight: 800; font-size: 17px; } .logo-text b { color: #1f5cff; }
+.nav a { color: #555; font-weight: 600; border-radius: 6px; } .nav a.active, .nav a:hover { color: #1f5cff; background: #eef2ff; }
+.search { background: #f1f2f5; border: 1px solid #e3e5ea; border-radius: 6px; }
+.avatar { background: #1f5cff; color: #fff; border-radius: 50%; }
+.user-name { font-weight: 600; }
+.btn { border-radius: 6px; font-weight: 700; background: #1f5cff; color: #fff; }
+.btn-ghost { background: #fff; color: #333; border: 1px solid #d5d8de; }
+.filters h3 { text-transform: uppercase; letter-spacing: .06em; color: #888; font-size: 11px; }
+.filters li { color: #444; }
+.featured { background: #fff; border: 1px solid #e3e5ea; border-radius: 8px; }
+.eyebrow { color: #1f5cff; font-weight: 700; }
+.featured-body h2 { font-weight: 800; }
+.browse-head h1 { font-weight: 800; } .count { color: #888; }
+.chip { border-radius: 99px; background: #fff; border: 1px solid #e3e5ea; color: #555; } .chip.active { background: #222; color: #fff; border-color: #222; }
+.cover { border-radius: 4px; box-shadow: 0 1px 3px #0002; }
+.cover-title { font-size: 13px; }
+.badge { background: #000a; color: #fff; border-radius: 3px; font-weight: 600; }
+.card-title { font-weight: 700; font-size: 15px; }
+.card-author { color: #1f5cff; } .card-desc { color: #666; }
+.tag { background: #eceef2; color: #555; border-radius: 3px; }
+.plays, .hiscore { color: #999; }
+.card-actions .btn-play { padding: 5px 14px; font-size: 13px; }
+.game-banner { padding-top: 28px; padding-bottom: 28px; }
+.game-title { font-weight: 800; }
+.embed { background: #fff; border: 1px solid #e3e5ea; border-radius: 6px; overflow: hidden; }
+.embed-bar { border-top: 1px solid #e3e5ea; }
+.embed-name { font-weight: 700; }
+.btn-run { border-radius: 6px; font-weight: 800; }
+.game-main h2 { font-size: 16px; font-weight: 800; border-bottom: 1px solid #e3e5ea; padding-bottom: 6px; }
+.shot { border-radius: 4px; }
+kbd { background: #fff; border: 1px solid #ccc; border-radius: 4px; box-shadow: 0 1px 0 #ccc; }
+.comment .avatar { background: #ddd; color: #555; }
+.panel { background: #fff; border: 1px solid #e3e5ea; border-radius: 8px; }
+.panel h3 { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: #888; }
+.scores li.me { color: #1f5cff; font-weight: 700; }
+.scores .s { font-variant-numeric: tabular-nums; color: #555; }
+.mini-cover { border-radius: 3px; }
+.site-foot { background: #fff; border-top: 1px solid #e3e5ea; color: #888; }
