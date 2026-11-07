@@ -3,3 +3,7 @@ data/*
 !data/.gitkeep
 *.tmp
 .env
+.venv/
+__pycache__/
+games/*/src/build/
+games/*/src/.build.log

@@ -17,7 +17,7 @@ async function boot(opts = {}) {
 test('lists games and serves hub + game files', async () => {
   const a = await boot();
   const games = await (await fetch(a.base + '/api/games')).json();
-  assert.deepEqual(games.map(g => g.id), ['flappy', 'doom']);
+  assert.deepEqual(games.map(g => g.id), ['flappy', 'doom', 'code-snake']);
   assert.equal((await fetch(a.base + '/')).status, 200);
   assert.equal((await fetch(a.base + '/games/flappy/index.html')).status, 200);
   const wasm = await fetch(a.base + '/games/doom/runtime/websockets-doom.wasm', { method: 'HEAD' });
@@ -34,6 +34,18 @@ test('blocks path traversal and non-public folders', async () => {
     assert.ok([403, 404].includes(r.status), `${p} -> ${r.status}`);
     assert.ok(!(await r.text()).includes('createApp'), p);
   }
+  await a.close();
+});
+
+test('redirects hostname localhost to 127.0.0.1 (pygbag dev-mode workaround)', async () => {
+  const a = await boot();
+  const port = a.server.address().port;
+  const http = require('node:http');
+  const got = await new Promise(r => http.get({ host: '127.0.0.1', port, path: '/x?y=1', headers: { Host: `localhost:${port}` } }, resp => { resp.resume(); r(resp); }));
+  assert.equal(got.statusCode, 302);
+  assert.equal(got.headers.location, `http://127.0.0.1:${port}/x?y=1`);
+  const ok = await new Promise(r => http.get({ host: '127.0.0.1', port, path: '/api/games', headers: { Host: `127.0.0.1:${port}` } }, resp => { resp.resume(); r(resp); }));
+  assert.equal(ok.statusCode, 200);
   await a.close();
 });
 

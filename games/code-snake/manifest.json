@@ -1,0 +1,10 @@
+{
+  "id": "code-snake",
+  "title": "Code Snake",
+  "tagline": "Fill the blank, eat the right code, dodge the bugs. (Python / pygame)",
+  "entry": "web/index.html",
+  "order": 30,
+  "tech": "python-pygbag",
+  "controls": { "keyboard": "Arrows / WASD, P pause, Esc menu", "touch": "Swipe, tap to start" },
+  "scoring": { "enabled": true, "label": "points", "max": 100000 }
+}

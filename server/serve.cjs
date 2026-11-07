@@ -159,6 +159,12 @@ function createApp(options = {}) {
       try { pathname = decodeURIComponent(new URL(req.url, 'http://x').pathname); }
       catch { return send(res, 400, 'Bad request'); }
       if (pathname.includes('\0')) return send(res, 400, 'Bad request');
+      // pygbag's runtime treats the hostname "localhost" as its own dev server and looks for packages at
+      // localhost:<port>/cdn/ (which does not exist here). 127.0.0.1 behaves like production, so redirect.
+      const hostHeader = String(req.headers.host || '');
+      if ((req.method === 'GET' || req.method === 'HEAD') && /^localhost(:\d+)?$/i.test(hostHeader)) {
+        return send(res, 302, '', { Location: 'http://' + hostHeader.replace(/^localhost/i, '127.0.0.1') + req.url });
+      }
       if (pathname.startsWith('/api/')) return await api(req, res, pathname);
       return await serveStatic(req, res, pathname);
     } catch (e) {

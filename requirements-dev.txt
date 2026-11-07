@@ -1,0 +1,2 @@
+pygbag>=0.9
+pygame-ce>=2.5

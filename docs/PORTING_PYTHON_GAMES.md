@@ -43,7 +43,7 @@ users to run it without installing pygbag (recommended: commit it — hosts then
 LAN play, self-host it: pygbag supports `--template` and a local runtime path; verify in the spike.
 If self-hosting is impractical, accept "needs internet on first load" for these games.
 
-## Option B — rewrite in JavaScript/Canvas
+## Option B — rewrite in JavaScript/Canvas (REJECTED: games must stay Python)
 
 **Pros:** tiny, instant load, same stack as Flappy, perfect mobile/offline, trivial to edit.
 **Cons:** full rewrite; the logic must be re-implemented and re-tested.

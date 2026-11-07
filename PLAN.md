@@ -74,9 +74,8 @@ Fastest visible result; no porting risk.
 
 Order = easiest/highest value first. See `docs/PORTING_PYTHON_GAMES.md`.
 
-- [ ] **Spike (½ day):** run `game_v2.py` (Code Snake) through pygbag; confirm it plays in a
-      browser, keyboard works, and decide pygbag vs JS rewrite from the result.
-- [ ] Code Snake → `games/code-snake/`
+- [x] **Decision: games stay in Python**, built with pygbag. Build verified; browser check still pending.
+- [x] Code Snake → `games/code-snake/` (stays Python, pygbag build; browser-untested)
 - [ ] Flashcard Sniper → `games/flashcard-sniper/`
 - [ ] PyRacer → `games/py-racer/` (largest; keep modules, add tests that still run on CPython)
 - [ ] Replace JSON-file scores with browser storage in each port.
@@ -111,7 +110,7 @@ Order = easiest/highest value first. See `docs/PORTING_PYTHON_GAMES.md`.
 
 | Risk | Impact | Mitigation |
 |---|---|---|
-| pygbag needs async loop refactor and loads its runtime from a CDN by default | Python ports slower; LAN play needs internet | Spike first; self-host the runtime or fall back to JS rewrite |
+| pygbag needs async loop refactor and loads its runtime from a CDN by default | Python ports slower; LAN play needs internet | Self-host the runtime (TODO). Decision: games stay Python, no JS rewrites |
 | pygame `font.SysFont` / file writes / threads don't work in WASM | Ports break at runtime | Bundle fonts (Geist Pixel already exists), use localStorage, avoid blocking calls |
 | Doom is heavy and uses SharedArrayBuffer-style features in some builds | Slow first load / needs headers | It currently works under a plain server; keep it lazy-loaded and test through the hub |
 | iframe focus: keyboard input goes to the hub, not the game | Game seems unresponsive | `player.js` focuses the iframe on load and on click |

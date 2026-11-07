@@ -7,7 +7,11 @@
     "start": "node server/serve.cjs",
     "serve:lan": "node server/serve.cjs --host 0.0.0.0",
     "check": "node scripts/check.cjs",
-    "test": "node --test tests/ games/*/tests/"
+    "test": "node --test tests/ games/*/tests/",
+    "build:py": "bash scripts/build-python-games.sh",
+    "test:py": ".venv/bin/python -m unittest discover -s games/code-snake/tests"
   },
-  "engines": { "node": ">=20" }
+  "engines": {
+    "node": ">=20"
+  }
 }
