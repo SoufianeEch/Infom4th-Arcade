@@ -1,0 +1,13 @@
+{
+  "name": "infom4th-arcade",
+  "version": "0.1.0",
+  "private": true,
+  "description": "InfoM4th Arcade: menu + games + shared leaderboard. Zero dependencies.",
+  "scripts": {
+    "start": "node server/serve.cjs",
+    "serve:lan": "node server/serve.cjs --host 0.0.0.0",
+    "check": "node scripts/check.cjs",
+    "test": "node --test tests/ games/*/tests/"
+  },
+  "engines": { "node": ">=20" }
+}

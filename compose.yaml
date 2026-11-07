@@ -1,0 +1,11 @@
+services:
+  arcade:
+    build: .
+    image: infom4th-arcade
+    ports:
+      - "${PORT:-8080}:8080"
+    volumes:
+      - arcade-data:/data
+    restart: unless-stopped
+volumes:
+  arcade-data:

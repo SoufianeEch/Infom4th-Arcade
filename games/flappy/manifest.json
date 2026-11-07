@@ -1,0 +1,9 @@
+{
+  "id": "flappy",
+  "title": "InfoM4th Flappy",
+  "tagline": "Guide the origami logo through the gates.",
+  "entry": "index.html",
+  "order": 10,
+  "controls": { "keyboard": "Space / Up / W", "touch": "Tap" },
+  "scoring": { "enabled": true, "label": "gates", "max": 5000 }
+}

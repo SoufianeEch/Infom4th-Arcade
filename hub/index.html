@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>InfoM4th Arcade</title>
+  <!-- v0: intentionally unstyled. Styling comes later (see PROGRESS.md). -->
+</head>
+<body>
+  <header>
+    <h1>InfoM4th Arcade</h1>
+    <label>Player name <input id="player" maxlength="12" placeholder="ANON" autocomplete="off"></label>
+  </header>
+
+  <main id="menu">
+    <h2>Select a game</h2>
+    <ul id="games"><li>Loading…</li></ul>
+    <p id="menu-error" hidden></p>
+  </main>
+
+  <section id="player-view" hidden>
+    <p><button id="back" type="button">← Menu</button> <strong id="now-playing"></strong> <button id="fs" type="button">Fullscreen</button> <span id="toast"></span></p>
+    <iframe id="frame" title="game" width="960" height="600" allow="fullscreen; autoplay; gamepad"></iframe>
+    <h3>Leaderboard</h3>
+    <ol id="board"></ol>
+  </section>
+
+  <script src="./arcade.js"></script>
+</body>
+</html>

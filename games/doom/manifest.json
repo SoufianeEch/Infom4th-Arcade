@@ -1,0 +1,9 @@
+{
+  "id": "doom",
+  "title": "InfoM4th DOOM",
+  "tagline": "Chocolate Doom in WebAssembly with Freedoom data. Large first load (~30 MB).",
+  "entry": "index.html",
+  "order": 20,
+  "controls": { "keyboard": "Arrows / Ctrl / Space", "touch": "On-screen controller" },
+  "scoring": { "enabled": false }
+}

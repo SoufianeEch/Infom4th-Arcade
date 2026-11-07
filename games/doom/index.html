@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#080f19"><title>InfoM4th Arcade</title>
+<style>
+:root{color-scheme:dark;--bg:#080f19;--panel:#101e2c;--line:#2b4352;--cyan:#72dcf4;--text:#eaf8fb;--muted:#93aebd;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 78% -20%,#153e50 0,transparent 42%),var(--bg);color:var(--text)}button,a{font:inherit}button{cursor:pointer}button:focus-visible,a:focus-visible{outline:2px solid #a7efff;outline-offset:3px}.wrap{max-width:1200px;margin:auto;padding:24px 32px 40px}header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #263b49;padding-bottom:18px}.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text);font-size:19px;font-weight:800;letter-spacing:-.04em}.brand img{width:46px;height:46px;object-fit:contain}.brand b{color:var(--cyan)}.badge,.eyebrow{color:var(--cyan);font:700 10px monospace;letter-spacing:.16em;text-transform:uppercase}.badge{border:1px solid #305968;border-radius:99px;padding:8px 12px}.hero{display:flex;align-items:end;justify-content:space-between;gap:24px;margin:34px 0 22px}.hero h1{font-size:clamp(36px,6vw,66px);line-height:.95;letter-spacing:-.065em;margin:10px 0 0}.hero h1 span{color:var(--cyan)}.hero p{max-width:360px;color:var(--muted);font-size:14px;line-height:1.6;margin:0}.game-shell{background:#0b1722;border:1px solid #294657;border-radius:8px;overflow:hidden;box-shadow:0 24px 65px #0007}.game-shell:fullscreen{display:flex;flex-direction:column;justify-content:center;background:#080f19;overflow:auto}.toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;border-bottom:1px solid #263b49}.live{font:700 10px monospace;letter-spacing:.12em;color:#a0bdc9}.live:before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:#5ad8b4;margin-right:8px}.tools{display:flex;gap:7px;flex-wrap:wrap;justify-content:end}.tool,.toggle{border:1px solid #355262;border-radius:4px;background:#142a39;color:#d8f1f5;padding:8px 11px;font-size:12px;font-weight:700}.tool:hover,.toggle:hover{background:#1e4051}.tool.exit{color:#ffbfc1;border-color:#6d4249;background:#33212a}.screen{position:relative;background:#000;aspect-ratio:4/3;max-height:68vh}.game-shell:fullscreen .screen{flex:1;min-height:0;max-height:none;aspect-ratio:auto}canvas{display:block;width:100%;height:100%;object-fit:contain;image-rendering:pixelated;outline:none}.overlay{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:18px;background:radial-gradient(circle at 50% 30%,#173d4c,#0a1925 55%,#08111b)}.overlay.hidden,[hidden]{display:none!important}.panel{max-width:430px}.panel img{width:clamp(65px,12vw,110px);height:auto}.panel h2{font-size:clamp(24px,4vw,44px);letter-spacing:-.05em;line-height:1;margin:12px 0}.panel p{color:#a9c1cc;line-height:1.5;font-size:14px}.start{background:var(--cyan);color:#06202c;border:0;border-radius:3px;padding:14px 25px;font-size:12px;font-weight:900;letter-spacing:.06em}.start:disabled{opacity:.55;cursor:wait}.status{font:11px monospace;color:#abc5d1;max-height:48px;overflow:auto}.mobile-controls{padding:12px;background:#0c1a26;border-top:1px solid var(--line);user-select:none;-webkit-user-select:none;touch-action:none}.control-header{display:flex;justify-content:space-between;align-items:center;font:700 10px monospace;letter-spacing:.12em;color:#a4bfca;margin-bottom:9px}.pads{display:grid;grid-template-columns:1fr 1fr;gap:12px}.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}.pad button,.menu-buttons button{border:1px solid #385869;border-radius:5px;color:#dff7fc;background:#172f3e;font-weight:800;min-height:44px;touch-action:none}.pad button:active,.pad button.pressed,.menu-buttons button:active{background:#4db6cd;color:#061722}.pad .fire{background:#24566b;color:#a9efff}.menu-buttons{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;margin-top:7px}.menu-buttons button{min-height:36px;font-size:11px}.caption{display:flex;justify-content:space-between;gap:20px;padding:18px 0;color:var(--muted);font-size:12px;line-height:1.7}.caption strong{color:#ddf4f7}.caption a{color:var(--cyan)}@media(max-width:700px){.wrap{padding:16px 14px 28px}.hero{display:block;margin:26px 0 20px}.hero p{margin-top:12px}.toolbar{align-items:flex-start}.live{padding-top:10px}.tool{padding:8px;font-size:11px}.caption{display:block}.caption>div+div{margin-top:12px}.badge{display:none}.game-shell:fullscreen .screen{max-height:none}.game-shell:fullscreen .mobile-controls{padding:6px}.game-shell:fullscreen .pad button{min-height:35px}.game-shell:fullscreen .menu-buttons button{min-height:30px}}
+/* Touch gamepad */
+.game-shell.landscape-mode{position:fixed;inset:0;z-index:100;background:#07121b;overflow:auto;border:0;border-radius:0}
+.page-actions{display:flex;justify-content:flex-end;margin:0 0 10px}.page-actions .tool{padding:10px 16px}
+.mobile-controls{padding:14px clamp(12px,4vw,28px) 18px;touch-action:none}
+.controller-top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}
+.controller-top span,.pad-label{font:700 10px monospace;letter-spacing:.1em;color:#9bbdc9}
+.shoulders{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;margin-bottom:7px}
+.shoulders button{border:1px solid #385869;background:#193442;color:#ccecf3;border-radius:9px 9px 4px 4px;padding:8px;min-height:38px;font-weight:800;touch-action:none}
+.controller-body{display:flex;justify-content:space-between;align-items:center;gap:8px;max-width:640px;margin:auto}
+.cluster{text-align:center}.pad-label{display:block;margin-bottom:5px}
+.cross,.face{display:grid;grid-template-columns:repeat(3,clamp(44px,12vw,58px));grid-template-rows:repeat(3,clamp(44px,12vw,58px));gap:3px}
+.cross button,.face button{padding:0;border:1px solid #3e6274;background:#193342;color:#e4f8ff;font-size:18px;font-weight:800;touch-action:none;-webkit-user-select:none;user-select:none}
+.cross button{border-radius:7px}.face button{border-radius:50%;font-size:23px}
+.cross .up,.face .triangle{grid-area:1/2}.cross .left,.face .square{grid-area:2/1}.cross .right,.face .circle{grid-area:2/3}.cross .down,.face .crossbutton{grid-area:3/2}
+.face .triangle{color:#81ebd2}.face .circle{color:#ff9ea5}.face .crossbutton{color:#8dc7ff}.face .square{color:#e7a7e8}
+.cross button.pressed,.face button.pressed,.shoulders button.pressed,.center-controls button.pressed{background:#54bdd3;color:#061722}
+.center-controls{display:flex;flex-direction:column;align-items:center;gap:7px}
+.center-controls button{border:1px solid #3a596a;background:#162e3c;color:#d9f4f8;border-radius:14px;font:700 10px monospace;letter-spacing:.05em;padding:8px 12px;touch-action:none}
+.control-help{margin:8px 0 0;color:#98b6c2;font-size:11px;text-align:center;line-height:1.4}
+@media(max-width:400px){.cross,.face{grid-template-columns:repeat(3,38px);grid-template-rows:repeat(3,38px)}.mobile-controls{padding:10px}.controller-body{gap:4px}.center-controls button{padding:7px 8px}.control-help{font-size:10px}}
+@media (orientation:landscape) and (max-height:600px){.wrap{padding:8px}.hero,header,.caption{display:none}.toolbar{padding:4px 8px}.screen{max-height:48vh}.mobile-controls{padding:5px 12px}.controller-top,.control-help{display:none}.shoulders{margin:0 0 4px}.shoulders button{min-height:27px;padding:3px}.cross,.face{grid-template-columns:repeat(3,35px);grid-template-rows:repeat(3,35px)}.pad-label{margin:0}.game-shell:fullscreen .screen{max-height:48vh}.game-shell:fullscreen{justify-content:center}}
+@media (orientation:landscape) and (max-height:600px){
+ .game-shell:fullscreen,.game-shell.landscape-mode{position:fixed;inset:0;z-index:100;background:#07121b;display:flex;flex-direction:column;overflow:hidden;border:0;border-radius:0}
+ .game-shell:fullscreen .toolbar,.game-shell.landscape-mode .toolbar{flex:0 0 auto;width:100%;z-index:2}
+ .game-shell:fullscreen .screen,.game-shell.landscape-mode .screen{flex:0 1 auto;width:min(calc(100vw - 260px),calc((100dvh - 50px)*4/3));height:min(calc(100dvh - 50px),calc((100vw - 260px)*3/4));max-height:none;aspect-ratio:4/3;margin:auto}
+ .game-shell:fullscreen .mobile-controls:not([hidden]),.game-shell.landscape-mode .mobile-controls:not([hidden]){position:absolute;inset:42px 0 0;padding:0;background:transparent;border:0;pointer-events:none}
+ .game-shell:fullscreen .controller-body,.game-shell.landscape-mode .controller-body{position:absolute;inset:40px 0 10px;max-width:none;display:block}
+ .game-shell:fullscreen .cluster,.game-shell.landscape-mode .cluster{position:absolute;top:50%;transform:translateY(-50%);pointer-events:auto}
+ .game-shell:fullscreen .cluster:first-child,.game-shell.landscape-mode .cluster:first-child{left:4px}
+ .game-shell:fullscreen .cluster:last-child,.game-shell.landscape-mode .cluster:last-child{right:4px}
+ .game-shell:fullscreen .shoulders,.game-shell.landscape-mode .shoulders{display:flex;justify-content:space-between}
+ .game-shell:fullscreen .shoulders button,.game-shell.landscape-mode .shoulders button{width:125px;pointer-events:auto;font-size:10px}
+ .game-shell:fullscreen .center-controls,.game-shell.landscape-mode .center-controls{position:absolute;bottom:0;left:50%;transform:translateX(-50%);flex-direction:row;pointer-events:auto}
+ .game-shell:fullscreen .center-controls button,.game-shell.landscape-mode .center-controls button{padding:5px 8px}
+}
+</style></head>
+<body><main class="wrap">
+<header><a class="brand" href="./"><img src="theme/infom4th-logo.png" alt=""><span>INFO<b>M4TH</b> / ARCADE</span></a><span class="badge">A CLUB PROJECT</span></header>
+<section class="hero"><div><div class="eyebrow">MISSION 01 / ARCADE</div><h1>INFO<span>M4TH</span> DOOM.</h1></div><p>Classic first-person action, reimagined for our club. Pick up your keyboard or use the touch controls and jump in.</p></section>
+<div class="page-actions"><button class="tool exit" id="pageExit" type="button">Exit game</button></div>
+<section class="game-shell" id="gameShell" aria-label="Game and controls">
+<div class="toolbar"><span class="live">SINGLE PLAYER</span><div class="tools"><button class="tool" id="menu" type="button">Game menu</button><button class="tool" id="fullscreen" type="button">Fullscreen</button><button class="tool" id="toggleControls" type="button" aria-expanded="false" aria-controls="controls">Touch controls</button><button class="tool exit" id="exit" type="button">Exit game</button></div></div>
+<div class="screen"><canvas id="canvas" tabindex="0" aria-label="DOOM game screen" oncontextmenu="event.preventDefault()"></canvas><div class="overlay" id="overlay"><div class="panel"><img src="theme/infom4th-logo.png" alt="InfoM4th logo"><div class="eyebrow">WELCOME TO THE ARCADE</div><h2>READY FOR YOUR MISSION?</h2><p>Jump into a classic game with the InfoM4th look. The first load may take a moment.</p><button class="start" id="start" disabled>LOADING GAME...</button><p id="status" class="status" role="status">Preparing engine...</p></div></div></div>
+<div class="mobile-controls" id="controls" hidden>
+<div class="controller-top"><span>VIRTUAL CONTROLLER</span><span>HOLD BUTTONS TO MOVE</span></div>
+<div class="shoulders"><button data-keys="KeyA" aria-label="Strafe left">L1 &nbsp; STRAFE LEFT</button><span></span><button data-keys="KeyD" aria-label="Strafe right">R1 &nbsp; STRAFE RIGHT</button></div>
+<div class="controller-body">
+  <div class="cluster"><span class="pad-label">MOVE / MENU</span><div class="cross">
+    <button class="up" data-keys="ArrowUp" aria-label="Move forward or menu up">&#9650;</button>
+    <button class="left" data-keys="ArrowLeft" aria-label="Turn left or menu left">&#9664;</button>
+    <button class="right" data-keys="ArrowRight" aria-label="Turn right or menu right">&#9654;</button>
+    <button class="down" data-keys="ArrowDown" aria-label="Move backward or menu down">&#9660;</button>
+  </div></div>
+  <div class="center-controls"><button data-keys="Backspace" aria-label="Back in game menu">BACK</button><button data-keys="Escape" aria-label="Open game menu">START</button><button data-keys="Shift" aria-label="Hold to run">RUN</button><button data-keys="KeyY" aria-label="Confirm game prompt">YES</button><button id="resetControls" type="button" aria-label="Release all game controls">STOP</button></div>
+  <div class="cluster"><span class="pad-label">ACTIONS</span><div class="face">
+    <button class="triangle" data-keys="Digit2" aria-label="Select weapon 2">&#9651;</button>
+    <button class="square" data-keys="Digit3" aria-label="Select weapon 3">&#9633;</button>
+    <button class="circle" data-keys="Control" aria-label="Fire">&#9675;</button>
+    <button class="crossbutton" data-keys="Space Enter" aria-label="Use or select">&#10005;</button>
+  </div></div>
+</div><p class="control-help">D-pad: move and turn &nbsp; &middot; &nbsp; &#9675; fire &nbsp; &middot; &nbsp; &#10005; use / select &nbsp; &middot; &nbsp; &#9651; / &#9633; weapons</p></div>
+</section>
+<div class="caption"><div><strong>KEYBOARD</strong><br>Arrows move and turn &middot; A/D strafe &middot; Ctrl fires &middot; Space opens doors &middot; Esc opens the game menu</div><div><strong>NEED A BREAK?</strong><br>Use Exit game above the screen. Restarting clears saves from this browser session.<br><a href="runtime/COPYING">Engine license</a> &middot; <a href="https://github.com/Saketh-Chandra/doom-wasm-pwa/tree/a77edfd8bbc7">Engine source</a> &middot; <a href="runtime/FREEDOOM-COPYING.txt">Freedoom license</a> &middot; <a href="runtime/FREEDOOM-CREDITS.txt">Credits</a></div></div>
+</main>
+<script>
+(function(){
+  const canvas=document.getElementById('canvas'),status=document.getElementById('status'),start=document.getElementById('start'),overlay=document.getElementById('overlay'),shell=document.getElementById('gameShell'),controls=document.getElementById('controls'),toggle=document.getElementById('toggleControls');
+  let running=false;
+  function message(text){status.textContent=text;console.log(text)}
+  const keys={KeyA:['a',65],KeyD:['d',68],KeyY:['y',89],Space:[' ',32],Control:['Control',17],Shift:['Shift',16],Escape:['Escape',27],ArrowUp:['ArrowUp',38],ArrowDown:['ArrowDown',40],ArrowLeft:['ArrowLeft',37],ArrowRight:['ArrowRight',39],Enter:['Enter',13],Backspace:['Backspace',8],Digit1:['1',49],Digit2:['2',50],Digit3:['3',51]};
+  function send(type,name){
+    const k=keys[name];if(!running||!k)return;
+    // SDL's Emscripten listeners can be attached to either document or canvas.
+    // Deliver once to each, without bubbling the canvas copy back to document.
+    for(const target of [document,canvas]){
+      const ev=new KeyboardEvent(type,{key:k[0],code:name==='Shift'?'ShiftLeft':name==='Control'?'ControlLeft':name,keyCode:k[1],which:k[1],bubbles:target===document,cancelable:true});
+      try{Object.defineProperty(ev,'keyCode',{get:()=>k[1]});Object.defineProperty(ev,'which',{get:()=>k[1]})}catch(e){}
+      target.dispatchEvent(ev);
+    }
+  }
+  function tap(name){send('keydown',name);setTimeout(()=>send('keyup',name),100)}
+  const active=new Map(),counts=new Map(),pending=new Map(),held=new Set();
+  function down(name){
+    if(pending.has(name)){clearTimeout(pending.get(name));pending.delete(name)}
+    counts.set(name,(counts.get(name)||0)+1);
+    if(!held.has(name)){held.add(name);send('keydown',name)}
+  }
+  function up(name,delay){
+    const n=counts.get(name)||0;if(!n)return;
+    if(n>1){counts.set(name,n-1);return}counts.delete(name);
+    pending.set(name,setTimeout(()=>{pending.delete(name);if(!counts.has(name)&&held.delete(name))send('keyup',name)},delay));
+  }
+  function releasePointer(pointerId){
+    const entry=active.get(pointerId);if(!entry)return;
+    active.delete(pointerId);
+    if(!Array.from(active.values()).some(other=>other.el===entry.el))entry.el.classList.remove('pressed');
+    const delay=Math.max(0,90-(Date.now()-entry.started));
+    entry.names.forEach(name=>up(name,delay));
+  }
+  function releaseAll(){
+    for(const timer of pending.values())clearTimeout(timer);
+    pending.clear();for(const name of held)send('keyup',name);
+    held.clear();counts.clear();for(const entry of active.values())entry.el.classList.remove('pressed');active.clear();
+  }
+  document.querySelectorAll('[data-keys]').forEach(el=>{
+    el.addEventListener('pointerdown',e=>{
+      e.preventDefault();if(!running||active.has(e.pointerId))return;
+      const names=el.dataset.keys.split(' ');active.set(e.pointerId,{el,names,started:Date.now()});
+      el.classList.add('pressed');names.forEach(down);
+      try{el.setPointerCapture(e.pointerId)}catch(e){}
+    });
+    el.addEventListener('lostpointercapture',e=>releasePointer(e.pointerId));
+    el.addEventListener('contextmenu',e=>e.preventDefault());
+  });
+  // Listen on the window as well as using pointer capture: mobile browsers can
+  // release or cancel a touch outside the button or interrupt it on rotation.
+  window.addEventListener('pointerup',e=>releasePointer(e.pointerId),true);
+  window.addEventListener('pointercancel',e=>releasePointer(e.pointerId),true);
+  window.addEventListener('blur',releaseAll);
+  window.addEventListener('pagehide',releaseAll);
+  window.addEventListener('orientationchange',releaseAll);
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)releaseAll()});
+  document.getElementById('resetControls').addEventListener('click',()=>{
+    releaseAll();
+    Object.keys(keys).forEach(name=>send('keyup',name));
+  });
+  function showControls(show){if(!show)releaseAll();controls.hidden=!show;toggle.setAttribute('aria-expanded',String(show))}
+  showControls(matchMedia('(pointer: coarse)').matches);
+  toggle.addEventListener('click',()=>showControls(controls.hidden));
+  document.getElementById('menu').addEventListener('click',()=>{if(document.pointerLockElement)document.exitPointerLock();tap('Escape')});
+  async function exitGame(){
+    if(running&&!window.confirm('Exit the game? Your current session and temporary saves will be lost.'))return;
+    releaseAll();
+    if(document.pointerLockElement)document.exitPointerLock();
+    if(document.fullscreenElement){try{await document.exitFullscreen()}catch(e){}}
+    shell.classList.remove('landscape-mode');
+    location.reload();
+  }
+  document.getElementById('exit').addEventListener('click',exitGame);
+  document.getElementById('pageExit').addEventListener('click',exitGame);
+  const fullscreenButton=document.getElementById('fullscreen');
+  function updateFullscreenLabel(){fullscreenButton.textContent=(document.fullscreenElement===shell||shell.classList.contains('landscape-mode'))?'Exit fullscreen':'Fullscreen'}
+  document.addEventListener('fullscreenchange',updateFullscreenLabel);
+  fullscreenButton.addEventListener('click',async()=>{
+    if(shell.classList.contains('landscape-mode')){shell.classList.remove('landscape-mode');updateFullscreenLabel();return}
+    if(document.fullscreenElement){try{await document.exitFullscreen()}catch(e){}updateFullscreenLabel();return}
+    try{if(!shell.requestFullscreen)throw Error('Unavailable');await shell.requestFullscreen()}
+    catch(e){shell.classList.add('landscape-mode')}
+    updateFullscreenLabel();
+  });
+  window.onerror=function(text){message('Error: '+text);return false};
+  window.addEventListener('unhandledrejection',e=>message('Error: '+(e.reason&&e.reason.message||e.reason)));
+  window.Module={
+    canvas:canvas,noInitialRun:true,noExitRuntime:true,locateFile:name=>'runtime/'+name,
+    print:t=>console.log(t),printErr:t=>console.error(t),setStatus:t=>{if(t)message(t)},
+    preRun:function(){try{Module.FS.mkdir('/savefiles')}catch(e){}['freedoom1.wad','default.cfg','infom4th-menu.wad'].forEach(f=>Module.FS.createPreloadedFile('',f,'runtime/'+f,true,true))},
+    onRuntimeInitialized:function(){message('Ready to play.');start.disabled=false;start.textContent='PLAY NOW'},
+    onAbort:reason=>message('Engine failed: '+reason)
+  };
+  start.addEventListener('click',function(){start.disabled=true;try{canvas.focus();callMain(['-iwad','freedoom1.wad','-file','infom4th-menu.wad','-window','-nogui','-nomusic','-config','default.cfg','-savedir','/savefiles']);running=true;overlay.classList.add('hidden')}catch(e){message('Could not start: '+(e.message||e));start.disabled=false}});
+  const script=document.createElement('script');script.src='runtime/websockets-doom.js';script.onerror=function(){message('Game files are missing. Run node setup-game.js first.');start.textContent='SETUP NEEDED'};document.body.appendChild(script);
+})();
+</script></body></html>
