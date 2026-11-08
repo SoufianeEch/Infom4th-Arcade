@@ -1,0 +1,34 @@
+{
+  "id": "binary-blocks",
+  "entry": "web/index.html",
+  "tech": "python-pygbag",
+  "title": "Binary Blocks",
+  "tagline": "Flip the bits to match the falling numbers.",
+  "order": 60,
+  "controls": {
+    "keyboard": "1-8 flip bits, Space lock, Backspace clear",
+    "touch": "Tap the switches and LOCK"
+  },
+  "scoring": {
+    "enabled": true,
+    "label": "points",
+    "max": 200000
+  },
+  "aspect": "1000/640",
+  "tags": [
+    "python",
+    "puzzle"
+  ],
+  "short": "BINARY",
+  "glyph": "🧱",
+  "genre": "Puzzle",
+  "madeWith": "Python",
+  "description": "Decimal numbers fall toward the ground. Flip the eight bit switches (128, 64, 32, 16, 8, 4, 2, 1) until your byte equals a falling number, then lock it to blow the block up. Chain hits for a combo; the numbers start small and grow up to 255 as the levels rise.",
+  "theme": {
+    "bg": "#062a3a",
+    "fg": "#e6fdff",
+    "accent": "#2fe0f0",
+    "accentFg": "#002a30",
+    "soft": "#07474f"
+  }
+}

@@ -9,7 +9,8 @@
     "check": "node scripts/check.cjs",
     "test": "node --test tests/ games/*/tests/",
     "build:py": "bash scripts/build-python-games.sh",
-    "test:py": "bash scripts/test-python.sh"
+    "test:py": "bash scripts/test-python.sh",
+    "demo": "bash scripts/demo.sh"
   },
   "engines": {
     "node": ">=20"

@@ -57,21 +57,24 @@
 .empty-note { color: var(--ink-soft); font-size: 22px; }
 
 /* game page */
-.game-banner { padding: 40px clamp(16px, 3vw, 40px); background: var(--g-bg); color: var(--g-fg); border-bottom: 3px solid var(--ink); }
-.banner-inner { max-width: 1400px; margin: 0 auto; display: flex; align-items: center; gap: 22px; }
-.banner-glyph { font-size: 72px; line-height: 1; }
-.game-title { margin: 0; font-size: clamp(48px, 7vw, 86px); }
-.game-tagline { margin: 6px 0 0; opacity: .9; }
-.game-layout { display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: 32px; padding: 28px clamp(16px, 3vw, 40px) 40px; max-width: 1400px; margin: 0 auto; }
-.embed { background: var(--card); border: 2px solid var(--ink); padding: 10px; border-radius: var(--wob-2); }
-.embed-screen { position: relative; width: min(100%, calc(var(--max-h, 72vh) * var(--ar-n, 1.6))); aspect-ratio: var(--ar, 16 / 10); margin: 0 auto; overflow: hidden; background: var(--g-bg); color: var(--g-fg); border-radius: 10px 180px 10px 200px / 200px 10px 180px 10px; }
+/* play page: the first screen is title + game + buttons, sized to the window so the whole game is always visible */
+:root { --head-h: 84px; }
+.play-area { display: flex; flex-direction: column; gap: 8px; height: calc(100vh - var(--head-h)); height: calc(100dvh - var(--head-h)); min-height: 380px; padding: 8px clamp(8px, 1.5vw, 24px) 10px; }
+.game-banner { flex: none; display: flex; align-items: baseline; gap: 14px; padding: 4px 16px; background: var(--g-bg); color: var(--g-fg); border: 2px solid var(--ink); border-radius: var(--wob-1); overflow: hidden; white-space: nowrap; }
+.banner-glyph { font-size: 28px; line-height: 1; align-self: center; }
+.game-title { margin: 0; font-size: clamp(28px, 3.2vw, 42px); }
+.game-tagline { margin: 0; opacity: .9; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.game-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 28px; padding: 22px clamp(10px, 2vw, 32px) 40px; max-width: 1900px; margin: 0 auto; }
+.embed { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; background: var(--card); border: 2px solid var(--ink); padding: 8px 8px 4px; border-radius: var(--wob-2); }
+.embed-box { flex: 1 1 auto; min-height: 0; container-type: size; display: grid; place-items: center; }   /* the game is the biggest box of its shape that fits in here */
+.embed-screen { position: relative; width: min(100cqw, calc(100cqh * var(--ar-n, 1.6))); aspect-ratio: var(--ar, 16 / 10); margin: 0; overflow: hidden; background: var(--g-bg); color: var(--g-fg); border-radius: 10px 180px 10px 200px / 200px 10px 180px 10px; }
 .embed-screen.running { border-radius: 8px; background: #000; }
 .embed-cover { position: absolute; inset: 0; display: grid; place-items: center; align-content: center; gap: 18px; text-align: center; padding: 16px; }
 .embed-glyph { font-size: 96px; line-height: 1; }
 .btn-run { background: var(--g-accent); color: var(--g-accent-fg); border-color: var(--g-fg); box-shadow: 3px 4px 0 var(--g-fg); }
 .embed-hint { margin: 0; font-size: 18px; opacity: .8; }
 .embed-screen iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; background: #000; }
-.embed-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 6px 4px; flex-wrap: wrap; }
+.embed-bar { flex: none; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 6px 4px; flex-wrap: wrap; }
 .embed-name { font: 700 24px var(--title); }
 .embed-tools { display: flex; gap: 10px; flex-wrap: wrap; }
 .game-main section { margin-top: 32px; }
@@ -79,7 +82,7 @@
 .desc p { margin: 0; max-width: 70ch; }
 .controls { border-collapse: collapse; }
 .controls td { padding: 6px 18px 6px 0; vertical-align: top; }
-.game-side { display: flex; flex-direction: column; gap: 22px; }
+.game-side { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 22px; align-items: start; }   /* panels sit under the game */
 .panel h3 { margin: 0 0 10px; font-size: 26px; }
 .play-panel { display: flex; flex-direction: column; align-items: stretch; gap: 10px; text-align: center; }
 .play-panel .btn-play { background: var(--g-accent); color: var(--g-accent-fg); }
@@ -122,6 +125,9 @@ dialog::backdrop { background: #10182e; opacity: .6; }
 .error { color: var(--red) !important; min-height: 1.4em; margin: 10px 0 14px !important; }
 .dialog-actions { display: flex; gap: 16px; flex-wrap: wrap; }
 
+.embed-screen:fullscreen { width: 100% !important; height: 100% !important; max-width: none !important; aspect-ratio: auto !important; border-radius: 0 !important; background: #000; }
+.embed-screen:fullscreen iframe { width: 100%; height: 100%; }
+body.fs-fallback .embed-box { container-type: normal; }          /* a size container would trap the fixed-position fallback */
 body.fs-fallback .embed-screen { position: fixed; inset: 0; width: 100%; z-index: 50; aspect-ratio: auto; border-radius: 0; }
 
 @media (max-width: 900px) {
@@ -130,6 +136,5 @@ body.fs-fallback .embed-screen { position: fixed; inset: 0; width: 100%; z-index
   .filters { display: flex; gap: 26px; flex-wrap: wrap; }
   .featured { grid-template-columns: 1fr; }
   .featured-cover { min-height: 200px; }
-  .embed-screen { --max-h: 64vh; }
 }
 @media (max-width: 560px) { body { font-size: 18px; } .user-name { display: none; } .banner-glyph { font-size: 48px; } .logo-text { font-size: 24px; } }

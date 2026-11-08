@@ -12,6 +12,8 @@ const fsp = fs.promises;
 const path = require('node:path');
 const os = require('node:os');
 const pygbag = require('./pygbag.cjs');
+const { attachWebSocket } = require('./ws.cjs');
+const { RoomManager } = require('./rooms.cjs');
 
 const ROOT = path.resolve(__dirname, '..');
 const MIME = {
@@ -30,7 +32,8 @@ function createApp(options = {}) {
   const dataDir = path.resolve(options.dataDir || process.env.DATA_DIR || path.join(ROOT, 'data'));
   const gamesDir = path.resolve(options.gamesDir || path.join(ROOT, 'games'));
   const hubDir = path.join(ROOT, 'hub');
-  const sharedDir = path.join(ROOT, 'shared');
+  // shared/ (theme, fonts, python helpers) may live at the repo root or inside server/
+  const sharedDir = ['shared', 'server/shared'].map(d => path.join(ROOT, d)).find(d => fs.existsSync(d)) || path.join(ROOT, 'shared');
   const pygbagDir = path.resolve(options.pygbagDir || path.join(ROOT, 'vendor', 'pygbag'));
   const pygbagCache = path.join(dataDir, 'pygbag-cache');      // files fetched on demand (writable, survives restarts in Docker)
   const upstream = options.pygbagUpstream === undefined ? (process.env.PYGBAG_PROXY === '0' ? null : pygbag.UPSTREAM) : options.pygbagUpstream;
@@ -184,7 +187,7 @@ function createApp(options = {}) {
     fs.createReadStream(real).on('error', () => res.destroy()).pipe(res);
   }
 
-  return http.createServer(async (req, res) => {
+  const server = http.createServer(async (req, res) => {
     try {
       let pathname;
       try { pathname = decodeURIComponent(new URL(req.url, 'http://x').pathname); }
@@ -204,6 +207,30 @@ function createApp(options = {}) {
       if (!e.status) console.error(e);
     }
   });
+
+  // Multiplayer rooms over WebSocket (/ws): see server/rooms.cjs
+  const rooms = options.rooms || new RoomManager();
+  const perIp = new Map();
+  const ws = attachWebSocket(server, '/ws', (conn) => {
+    const ip = conn.ip || '?';
+    const n = (perIp.get(ip) || 0) + 1;
+    perIp.set(ip, n);
+    if (n > (options.maxSocketsPerIp || 20)) { conn.close(1013); perIp.set(ip, n - 1); return; }
+    const client = rooms.connect(obj => conn.send(JSON.stringify(obj)));
+    let windowStart = Date.now(), count = 0;
+    conn.on('message', text => {
+      const now = Date.now();
+      if (now - windowStart > 1000) { windowStart = now; count = 0; }
+      if (++count > 30) { conn.close(1008); return; }                          // flooding
+      let msg;
+      try { msg = JSON.parse(text); } catch { client.send({ t: 'error', code: 'bad_message', message: 'Bad message.' }); return; }
+      try { rooms.handle(client, msg); } catch (e) { console.error('room error:', e); client.send({ t: 'error', code: 'server', message: 'Something went wrong.' }); }
+    });
+    conn.on('close', () => { perIp.set(ip, Math.max(0, (perIp.get(ip) || 1) - 1)); rooms.disconnect(client); });
+  });
+  server.rooms = rooms;
+  server.sockets = ws;
+  return server;
 }
 
 function arg(flag) { const i = process.argv.indexOf(flag); return i >= 0 ? process.argv[i + 1] : undefined; }

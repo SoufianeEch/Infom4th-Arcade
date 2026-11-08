@@ -1,12 +1,7 @@
 FROM node:22-alpine
 WORKDIR /app
 ENV NODE_ENV=production HOST=0.0.0.0 PORT=8080 DATA_DIR=/data
-COPY package.json ./
-COPY server ./server
-COPY hub ./hub
-COPY shared ./shared
-COPY games ./games
-COPY vendor ./vendor
+COPY . .
 # Scores live in /data; mount a volume there so they survive container rebuilds.
 RUN mkdir -p /data && chown node:node /data
 VOLUME ["/data"]

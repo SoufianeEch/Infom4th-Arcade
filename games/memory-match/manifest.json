@@ -1,0 +1,34 @@
+{
+  "id": "memory-match",
+  "entry": "web/index.html",
+  "tech": "python-pygbag",
+  "title": "Memory Match",
+  "tagline": "Pair the code with what it means.",
+  "order": 80,
+  "controls": {
+    "keyboard": "Arrows move, Space flips",
+    "touch": "Tap the cards"
+  },
+  "scoring": {
+    "enabled": true,
+    "label": "points",
+    "max": 100000
+  },
+  "aspect": "1000/640",
+  "tags": [
+    "python",
+    "memory"
+  ],
+  "short": "MEMORY",
+  "glyph": "🃏",
+  "genre": "Puzzle",
+  "madeWith": "Python",
+  "description": "Flip two cards: a blue code card and a card that says what it does or returns. Clear the board before the timer runs out. Each level has more cards and less time, and streaks and speed add bonus points.",
+  "theme": {
+    "bg": "#3a2a00",
+    "fg": "#fff6d6",
+    "accent": "#ffd43b",
+    "accentFg": "#2b2000",
+    "soft": "#4d3a08"
+  }
+}

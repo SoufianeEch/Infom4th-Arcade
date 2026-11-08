@@ -169,6 +169,9 @@
   let toastTimer;
   function toast(msg) { $('toast').textContent = msg; clearTimeout(toastTimer); toastTimer = setTimeout(() => { $('toast').textContent = ''; }, 6000); }
 
+  function sizeHead() { const h = document.querySelector('.site-head'); if (h) document.documentElement.style.setProperty('--head-h', Math.ceil(h.getBoundingClientRect().height) + 'px'); }
+  window.addEventListener('resize', sizeHead);
+
   function showGame(g) {
     current = g;
     const [w, h] = String(g.aspect || '16/10').split('/').map(Number);
@@ -192,6 +195,7 @@
     $('toast').textContent = '';
     showWho();
     refreshBoard();
+    sizeHead();
     window.scrollTo(0, 0);
   }
   /** Click-to-run: the game only loads after the player has a name. */
@@ -205,7 +209,6 @@
     frame.hidden = false;
     frame.src = '/games/' + g.id + '/' + (g.entry || 'index.html');
     frame.addEventListener('load', () => { try { frame.contentWindow.focus(); } catch {} }, { once: true });
-    $('stage').scrollIntoView({ block: 'nearest', behavior: 'smooth' });
   }
   function stopGame() {
     document.body.classList.remove('fs-fallback');

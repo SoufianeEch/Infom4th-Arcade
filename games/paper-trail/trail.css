@@ -1,0 +1,44 @@
+/* Paper Trail game screen (lobby/join styles come from /shared/room-kit/lobby.css). Flat colours only. */
+.rules { max-width: 620px; margin: 22px auto 0; text-align: center; color: var(--ink-soft); font-size: 19px; }
+.rules { max-width: 620px; margin: 22px auto 0; text-align: center; color: var(--ink-soft); font-size: 19px; }
+/* the game fills the window: no page chrome while playing, overlays on top of the canvas */
+body.playing .top, body.playing .doodles { display: none; }
+body.playing main { max-width: none; padding: 0; }
+.tt-stage { position: relative; height: 100vh; height: 100dvh; background: var(--paper); overflow: hidden; touch-action: none; user-select: none; -webkit-user-select: none; }
+#tt-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; cursor: crosshair; }
+.tt-chips { position: absolute; top: 10px; left: 10px; display: flex; gap: 8px; pointer-events: none; }
+.tt-chip { min-width: 92px; padding: 2px 12px; text-align: center; background: color-mix(in srgb, var(--card) 92%, transparent); border: 2px solid var(--ink); border-radius: var(--wob-1); box-shadow: 2px 3px 0 var(--shadow); }
+.tt-chip small { display: block; color: var(--ink-soft); letter-spacing: .2em; font-size: 12px; line-height: 1.2; }
+.tt-chip b { font: 700 28px/1.1 var(--title); }
+.tt-side { position: absolute; top: 10px; right: 10px; width: 210px; padding: 8px 12px; background: color-mix(in srgb, var(--card) 92%, transparent); border: 2px solid var(--ink); border-radius: var(--wob-3); box-shadow: 2px 3px 0 var(--shadow); pointer-events: none; }
+.tt-side h3 { margin: 0 0 4px; font-size: 22px; }
+.tt-mini { position: absolute; right: 10px; bottom: 10px; width: 180px; height: 120px; background: var(--card); border: 2px solid var(--ink); border-radius: 8px; box-shadow: 2px 3px 0 var(--shadow); pointer-events: none; image-rendering: pixelated; }
+.tt-sound { position: absolute; left: 10px; bottom: 10px; }
+.tt-help { position: absolute; left: 50%; bottom: 8px; transform: translateX(-50%); margin: 0; padding: 0 12px; font-size: 17px; color: var(--ink-soft); background: color-mix(in srgb, var(--card) 80%, transparent); border-radius: 10px; pointer-events: none; white-space: nowrap; animation: help-fade 1s 9s forwards; }
+@keyframes help-fade { to { opacity: 0; } }
+.tt-banner { position: absolute; left: 50%; top: 42%; transform: translate(-50%, -50%); padding: 8px 24px; font: 700 34px/1.1 var(--title); text-align: center; color: var(--ink); background: var(--hl); border: 3px solid var(--ink); border-radius: var(--wob-1); box-shadow: 4px 5px 0 var(--ink); animation: toast-in .35s cubic-bezier(.2, 1.6, .4, 1); pointer-events: none; }
+#tt-board, #tt-final { list-style: none; margin: 0; padding: 0; }
+#tt-board li, #tt-final li { display: flex; align-items: center; gap: 8px; padding: 2px 0; border-bottom: 1px dashed var(--grid); }
+#tt-board li.me, #tt-final li.me { background: var(--hl); }
+#tt-board li.dead { opacity: .45; }
+.sw { flex: none; width: 14px; height: 14px; border: 2px solid var(--ink); border-radius: 50%; }
+.av-s { font-size: 20px; line-height: 1; }
+.nm { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 700 19px var(--title); }
+.pc { font-variant-numeric: tabular-nums; color: var(--ink-soft); }
+.results { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(92%, 500px); max-height: 92%; overflow: auto; margin: 0; animation: screen-in .5s cubic-bezier(.2, 1.4, .4, 1); }
+.results h2 { margin: 0 0 12px; font-size: 40px; text-align: center; }
+#tt-final li { padding: 6px 0; font-size: 20px; }
+#tt-final .rank { width: 2.4ch; font: 700 26px var(--title); }
+#tt-final .kl { color: var(--red); }
+@media (max-width: 760px) { .tt-side { width: 150px; padding: 4px 8px; } .nm { font-size: 16px; } .tt-chip { min-width: 70px; } .tt-chip b { font-size: 22px; } .tt-mini { width: 120px; height: 80px; } .tt-help { display: none; } }
+
+.quick { margin-top: 6px; }
+.seg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 0 0 12px; }
+.seg-btn { padding: 4px 8px; font: 700 22px var(--title); color: var(--ink); background: var(--card); border: 2px solid var(--ink); border-radius: var(--wob-1); cursor: pointer; transition: transform .1s; }
+.seg-btn:hover { transform: rotate(-1.5deg); }
+.seg-btn.on { background: var(--hl); box-shadow: 3px 4px 0 var(--ink); transform: translateY(-2px); }
+.settings { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 10px 26px; max-width: 620px; margin: 18px auto 0; padding: 12px 18px; }
+.settings label { display: flex; align-items: center; gap: 10px; font: 700 22px var(--title); }
+.settings select { padding: 3px 10px; font: 700 20px var(--title); color: var(--ink); background: var(--paper); border: 2px solid var(--ink); border-radius: var(--wob-2); }
+.settings select:disabled { opacity: .6; }
+.settings .hint { flex-basis: 100%; margin: 0; min-height: 0; font-size: 17px; }

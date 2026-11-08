@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="color-scheme" content="light dark">
+  <title>Paper Trail</title>
+  <link rel="stylesheet" href="/shared/theme.css">
+  <link rel="stylesheet" href="/shared/room-kit/lobby.css">
+  <link rel="stylesheet" href="./trail.css">
+</head>
+<body data-game="territory">
+  <canvas id="fx" aria-hidden="true"></canvas>
+  <div class="doodles" id="doodles" aria-hidden="true"></div>
+  <div id="flash" aria-hidden="true"></div>
+
+  <header class="top">
+    <h1 class="logo">Paper <b>Trail</b><span class="logo-eye" aria-hidden="true">✏️</span></h1>
+    <div class="top-tools">
+      <button id="mute" class="btn btn-small" type="button" aria-label="Sound on" title="Sound">🔊</button>
+      <button id="exit" class="btn btn-small btn-ghost" type="button">← Arcade</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- 1. join or create -->
+    <section id="screen-join" class="screen">
+      <div class="paper join-card">
+        <h2>Claim the map!</h2>
+        <label class="field"><span>Your name</span><input id="name" maxlength="12" autocomplete="off" spellcheck="false" placeholder="type your name"></label>
+        <p class="field-label">Pick your face</p>
+        <div class="avatars" id="avatar-pick" role="radiogroup" aria-label="Avatar"></div>
+        <p class="error" id="join-error" role="alert"></p>
+        <div class="quick">
+          <p class="field-label">Quick play against bots</p>
+          <div class="seg" role="radiogroup" aria-label="Bot level">
+            <button id="lvl-easy" class="seg-btn" type="button" role="radio">Easy</button>
+            <button id="lvl-normal" class="seg-btn on" type="button" role="radio">Normal</button>
+            <button id="lvl-hard" class="seg-btn" type="button" role="radio">Hard</button>
+          </div>
+          <button id="quick" class="btn btn-play btn-big" type="button">Play vs bots 🤖</button>
+        </div>
+        <div class="or"><span>or play with friends</span></div>
+        <button id="create" class="btn btn-big" type="button">Create a room</button>
+        <div class="or"><span>or join a friend</span></div>
+        <div class="code-row">
+          <input id="code" maxlength="4" autocomplete="off" spellcheck="false" placeholder="CODE" aria-label="Room code">
+          <button id="join" class="btn" type="button">Join</button>
+        </div>
+        <p class="status" id="conn-status" role="status"></p>
+      </div>
+    </section>
+
+    <!-- 2. lobby -->
+    <section id="screen-lobby" class="screen" hidden>
+      <div class="room-head">
+        <p class="room-label">ROOM CODE</p>
+        <div class="code-tiles" id="code-tiles" aria-live="polite"></div>
+        <button id="copy" class="btn btn-small" type="button">Copy invite link</button>
+      </div>
+      <p class="count" id="count"></p>
+      <ul class="players" id="players" aria-label="Players"></ul>
+      <div class="paper settings" id="settings">
+        <label>Bots <select id="set-bots"><option value="auto">Auto (fill to 6)</option><option value="0">None</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label>
+        <label>Bot level <select id="set-level"><option value="easy">Easy</option><option value="normal">Normal</option><option value="hard">Hard</option></select></label>
+        <p class="hint" id="settings-note"></p>
+      </div>
+      <p class="rules">Up to 6 players; the host picks how many bots join and how good they are. Steer freely around a big map: leave your land to draw a trail, swing back to claim everything you enclose, and touch a rival's trail to knock them out. 2½ minutes, most land wins.</p>
+      <div class="reactions" id="reactions" aria-label="Send a reaction"></div>
+      <div class="lobby-actions">
+        <button id="ready" class="btn btn-play btn-big" type="button">I'm ready!</button>
+        <button id="start" class="btn btn-play btn-big" type="button">Start the game</button>
+        <button id="leave" class="btn btn-ghost" type="button">Leave</button>
+      </div>
+      <p class="hint" id="lobby-hint" role="status"></p>
+    </section>
+
+    <!-- 3. the game: the stage fills the window; the camera follows you around a big map -->
+    <section id="screen-game" class="screen" hidden>
+      <div class="tt-stage" id="tt-stage">
+        <canvas id="tt-canvas" aria-label="Game view"></canvas>
+        <div class="tt-chips">
+          <div class="tt-chip"><small>TIME</small><b id="tt-time">2:30</b></div>
+          <div class="tt-chip"><small>YOUR LAND</small><b id="tt-me">0%</b></div>
+          <div class="tt-chip"><small>CUTS</small><b id="tt-kills">0</b></div>
+        </div>
+        <aside class="tt-side"><h3>Scoreboard</h3><ol id="tt-board"></ol></aside>
+        <canvas id="tt-mini" class="tt-mini" width="150" height="100" aria-label="Map overview"></canvas>
+        <button id="tt-sound" class="btn btn-small tt-sound" type="button" aria-label="Sound">🔊</button>
+        <p class="tt-help">Move the mouse to steer · A / D or ← → to turn · drag on a phone</p>
+        <div class="tt-banner" id="tt-banner" hidden></div>
+        <div id="tt-results" class="paper results" hidden>
+          <h2 id="tt-winner">Round over</h2>
+          <ol id="tt-final"></ol>
+          <div class="lobby-actions">
+            <button id="tt-again" class="btn btn-play btn-big" type="button">Play again</button>
+            <p class="hint" id="tt-wait">Waiting for the host…</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="countdown" hidden aria-live="assertive"><span id="count-num">3</span><p>Get your pencil ready…</p></div>
+  <div id="toasts" aria-live="polite"></div>
+
+  <script src="/shared/room-kit/fx.js"></script>
+  <script src="/shared/room-kit/lobby.js"></script>
+  <script src="./trail.js"></script>
+</body>
+</html>

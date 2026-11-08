@@ -148,7 +148,7 @@ config = {
     _sdl2 : "canvas",
     user_canvas : 0,
     user_canvas_managed : 0,
-    gui_divider : 2,
+    gui_divider : 1,
     ume_block : 1,
     can_close : 0,
     archive : "src",
@@ -156,9 +156,9 @@ config = {
     cdn : "/pygbag/cdn/0.9.3/",
     autorun : 0,
     PYBUILD : "3.12",
-    fb_ar   :  1.77,
-    fb_width : "1280",
-    fb_height : "720"
+    fb_ar   :  1.6000,
+    fb_width : "960",
+    fb_height : "600"
 }
 
 function show_infobox() {
@@ -286,7 +286,7 @@ function show_infobox() {
 
     <script src="/pygbag/cdn/0.9.3//browserfs.min.js"></script>
 
-<style>html,body{margin:0;background:#fbfaf4}</style></head>
+<style>html,body{height:100%;overflow:hidden;margin:0;background:#fbfaf4}</style><link rel="stylesheet" href="/shared/python-loader.css"></head>
 
 <body>
 
@@ -301,8 +301,8 @@ function show_infobox() {
 
 
     <canvas class="emscripten" id="canvas"
-width="1px"
-height="1px"
+width="960px"
+height="600px"
     oncontextmenu="event.preventDefault()" tabindex=1>
     </canvas>
 
@@ -312,7 +312,7 @@ height="720px"
     oncontextmenu="event.preventDefault()" tabindex=1 hidden>
     </canvas>
 
-    <div id="infobox">Loading, please wait ...</div>
+    <div id="infobox">Loading…</div>
 
     <div id=html></div>
 

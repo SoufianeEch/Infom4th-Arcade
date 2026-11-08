@@ -89,3 +89,18 @@ that needs a real server, storage and abuse protection).
 | Python game stuck loading | open the browser console; a 404 under `/pygbag/` means the mirror is incomplete: run `node scripts/mirror-pygbag.cjs --force` (online). Opening via `localhost` is redirected to `127.0.0.1` on purpose (pygbag dev-mode quirk) |
 | Scores "disappeared" | different origin/port/hostname = different localStorage |
 | Menu shows stale list | `hub/games.json` not rebuilt: `npm run build-registry` |
+
+---
+## Quick public demo for free (Cloudflare quick tunnel)
+No account, domain, router settings or Docker needed.
+
+```bash
+sudo pacman -S cloudflared      # once (Arch). Other systems: see the Cloudflare downloads page
+npm run demo                    # starts the arcade and the tunnel
+```
+Cloudflare prints a random `https://<words>.trycloudflare.com` address in the log: share it. Ctrl+C stops everything.
+
+- Works with the rooms and Paper Trail (WebSockets pass through the tunnel). The arcade listens on `127.0.0.1` only, so it is not exposed on your Wi-Fi, just through the tunnel.
+- The address changes on every run, the demo stops when you close the terminal or the PC sleeps, and scores are saved in `./data/scores.json` on this PC.
+- Quick tunnels are meant for demos and testing, with no uptime guarantee. For a permanent address use a named tunnel with your own domain (needs a free Cloudflare account) or a free always-on VM.
+- Anyone with the link can play: share it only with people you trust, and stop it when you are done.

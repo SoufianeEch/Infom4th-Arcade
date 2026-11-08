@@ -1,0 +1,18 @@
+{
+  "id": "imposter",
+  "title": "The Imposter",
+  "tagline": "Online party game: one of you doesn't know the word. Find them.",
+  "entry": "index.html",
+  "order": 90,
+  "tech": "html-websocket",
+  "controls": { "keyboard": "Mouse or keyboard", "touch": "Tap" },
+  "scoring": { "enabled": false },
+  "aspect": "4/3",
+  "tags": ["online", "party"],
+  "short": "IMPOSTER",
+  "glyph": "🕵️",
+  "genre": "Party",
+  "madeWith": "WebSocket",
+  "description": "Make a room, share the 4-letter code and play with friends online. Everyone gets the same secret Python word except one player: the imposter. Give clues that fit without giving it away, then vote the imposter out. (Rooms, lobby and secret roles are live; clue and vote rounds are coming next.)",
+  "theme": { "bg": "#3b0f1a", "fg": "#ffe9ee", "accent": "#ff5c7a", "accentFg": "#ffffff", "soft": "#561828" }
+}

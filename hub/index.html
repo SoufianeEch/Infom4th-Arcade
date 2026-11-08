@@ -30,16 +30,21 @@
 
   <!-- game page -->
   <div id="view-game" hidden>
-    <section class="game-banner"><div class="banner-inner"><span class="banner-glyph" id="g-glyph" aria-hidden="true"></span><div><h1 class="game-title" id="now-playing"></h1><p class="game-tagline" id="now-tagline"></p></div></div></section>
-    <div class="game-layout">
-      <main class="game-main">
-        <div class="embed">
+    <!-- exactly one screen tall (title + game + buttons), so the whole game is visible without scrolling -->
+    <section class="play-area">
+      <div class="game-banner"><span class="banner-glyph" id="g-glyph" aria-hidden="true"></span><h1 class="game-title" id="now-playing"></h1><p class="game-tagline" id="now-tagline"></p></div>
+      <div class="embed">
+        <div class="embed-box">
           <div class="embed-screen" id="stage">
             <div class="embed-cover" id="embed-cover"><span class="embed-glyph" id="cover-glyph" aria-hidden="true"></span><button class="btn btn-run btn-big" id="run" type="button">▶ Run game</button><p class="embed-hint" id="embed-hint"></p></div>
             <iframe id="frame" title="Game" allow="fullscreen; autoplay; gamepad" allowfullscreen hidden></iframe>
           </div>
-          <div class="embed-bar"><span class="embed-name" id="embed-name"></span><span class="embed-tools"><button class="btn btn-ghost btn-small" id="fs" type="button">⛶ Fullscreen</button><button class="btn btn-ghost btn-small" id="back" type="button">← All games</button></span></div>
         </div>
+        <div class="embed-bar"><span class="embed-name" id="embed-name"></span><span class="embed-tools"><button class="btn btn-ghost btn-small" id="fs" type="button">⛶ Fullscreen</button><button class="btn btn-ghost btn-small" id="back" type="button">← All games</button></span></div>
+      </div>
+    </section>
+    <div class="game-layout">
+      <main class="game-main">
         <section class="desc"><h2>About this game</h2><p id="g-desc"></p></section>
         <section class="controls-sec"><h2>Controls</h2><table class="controls"><tbody id="g-controls"></tbody></table></section>
       </main>

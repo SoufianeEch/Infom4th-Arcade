@@ -1,0 +1,34 @@
+{
+  "id": "variable-shooter",
+  "entry": "web/index.html",
+  "tech": "python-pygbag",
+  "title": "Variable Shooter",
+  "tagline": "Type the Python before it lands.",
+  "order": 70,
+  "controls": {
+    "keyboard": "Type the words, Backspace releases, Enter pauses",
+    "touch": "Not supported (needs a keyboard)"
+  },
+  "scoring": {
+    "enabled": true,
+    "label": "points",
+    "max": 500000
+  },
+  "aspect": "1000/640",
+  "tags": [
+    "python",
+    "typing"
+  ],
+  "short": "SHOOTER",
+  "glyph": "🚀",
+  "genre": "Typing",
+  "madeWith": "Python",
+  "description": "A ZType-style typing shooter. Python keywords, built-ins and tiny snippets fall from the top; type one to lock on and blast it. Wrong keys break your combo, and words that reach the dotted line cost a life. Waves bring longer words and faster drops.",
+  "theme": {
+    "bg": "#2a1240",
+    "fg": "#f6eaff",
+    "accent": "#c06bff",
+    "accentFg": "#ffffff",
+    "soft": "#3a1c57"
+  }
+}

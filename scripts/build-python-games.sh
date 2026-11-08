@@ -5,6 +5,7 @@
 # Usage: scripts/build-python-games.sh [game-id ...]     (default: all games that have src/main.py)
 set -euo pipefail
 cd "$(dirname "$0")/.."
+SHARED=shared; [ -d shared ] || SHARED=server/shared      # the shared folder may live at the root or inside server/
 PYGBAG=".venv/bin/pygbag"
 if [ ! -x "$PYGBAG" ]; then
   echo "Creating .venv and installing pygbag + pygame-ce (needs internet)..."
@@ -18,11 +19,11 @@ fi
 for id in "${ids[@]}"; do
   echo "== building $id"
   if [ -f "games/$id/src/arcade_web.py" ]; then
-    cp shared/python/arcade_web.py "games/$id/src/arcade_web.py"
+    cp "$SHARED/python/arcade_web.py" "games/$id/src/arcade_web.py"
     if [ -f "games/$id/src/paper_style.py" ]; then       # Notebook Paper helper + its fonts
-      cp shared/python/paper_style.py "games/$id/src/paper_style.py"
+      cp "$SHARED/python/paper_style.py" "games/$id/src/paper_style.py"
       mkdir -p "games/$id/src/fonts"
-      cp shared/python/fonts/* "games/$id/src/fonts/"
+      cp "$SHARED/python/fonts/"* "games/$id/src/fonts/"
     fi
   fi
   rm -rf "games/$id/src/build" "games/$id/web"
@@ -34,6 +35,7 @@ for id in "${ids[@]}"; do
   # match the arcade look: dark page background, real title instead of "src"
   title="$(python3 -c "import json,sys;print(json.load(open('games/$id/manifest.json')).get('title','$id'))")"
   sed -i "s#<title>src</title>#<title>${title}</title>#; s#</head>#<style>html,body{margin:0;background:\#fbfaf4}</style></head>#" "games/$id/web/index.html"
+  python3 scripts/fit_pygbag_page.py "games/$id"      # real canvas size + full width (stock pygbag shows a 1x1 canvas, half width, 16:9)
   ! grep -q "pygame-web.github.io" "games/$id/web/index.html" || { echo "CDN reference left in games/$id/web/index.html"; exit 1; }
   rm -rf "games/$id/src/build" "games/$id/src/.build.log"
   echo "   -> games/$id/web/ ($(du -sh "games/$id/web" | cut -f1))"

@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>The Imposter</title>
+  <link rel="stylesheet" href="/shared/theme.css">
+  <link rel="stylesheet" href="/shared/room-kit/lobby.css">
+</head>
+<body data-game="imposter">
+  <canvas id="fx" aria-hidden="true"></canvas>
+  <div class="doodles" id="doodles" aria-hidden="true"></div>
+  <div id="flash" aria-hidden="true"></div>
+
+  <header class="top">
+    <h1 class="logo">The <b>Imposter</b><span class="logo-eye" aria-hidden="true">🕵️</span></h1>
+    <div class="top-tools">
+      <button id="mute" class="btn btn-small" type="button" aria-label="Sound on" title="Sound">🔊</button>
+      <button id="exit" class="btn btn-small btn-ghost" type="button">← Arcade</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- 1. join or create -->
+    <section id="screen-join" class="screen">
+      <div class="paper join-card">
+        <h2>Who's playing?</h2>
+        <label class="field"><span>Your name</span><input id="name" maxlength="12" autocomplete="off" spellcheck="false" placeholder="type your name"></label>
+        <p class="field-label">Pick your face</p>
+        <div class="avatars" id="avatar-pick" role="radiogroup" aria-label="Avatar"></div>
+        <p class="error" id="join-error" role="alert"></p>
+        <button id="create" class="btn btn-play btn-big" type="button">Create a room</button>
+        <div class="or"><span>or join a friend</span></div>
+        <div class="code-row">
+          <input id="code" maxlength="4" autocomplete="off" spellcheck="false" placeholder="CODE" aria-label="Room code">
+          <button id="join" class="btn" type="button">Join</button>
+        </div>
+        <p class="status" id="conn-status" role="status"></p>
+      </div>
+    </section>
+
+    <!-- 2. lobby -->
+    <section id="screen-lobby" class="screen" hidden>
+      <div class="room-head">
+        <p class="room-label">ROOM CODE</p>
+        <div class="code-tiles" id="code-tiles" aria-live="polite"></div>
+        <button id="copy" class="btn btn-small" type="button">Copy invite link</button>
+      </div>
+      <p class="count" id="count"></p>
+      <ul class="players" id="players" aria-label="Players"></ul>
+      <div class="reactions" id="reactions" aria-label="Send a reaction"></div>
+      <div class="lobby-actions">
+        <button id="ready" class="btn btn-play btn-big" type="button">I'm ready!</button>
+        <button id="start" class="btn btn-play btn-big" type="button">Start the game</button>
+        <button id="leave" class="btn btn-ghost" type="button">Leave</button>
+      </div>
+      <p class="hint" id="lobby-hint" role="status"></p>
+    </section>
+
+    <!-- 3. secret role -->
+    <section id="screen-reveal" class="screen" hidden>
+      <p class="reveal-title" id="reveal-title">Your secret role</p>
+      <div class="flip" id="flip" tabindex="0" role="button" aria-label="Tap to reveal your role">
+        <div class="flip-inner">
+          <div class="face front"><span class="q">?</span><span>Tap to reveal<br>your role</span></div>
+          <div class="face back" id="role-back">
+            <p class="role-kind" id="role-kind"></p>
+            <p class="role-word" id="role-word"></p>
+            <p class="role-hint" id="role-hint"></p>
+          </div>
+        </div>
+      </div>
+      <p class="hint">Tap the card again to hide it before anyone peeks.</p>
+      <ul class="players mini" id="mini-players" aria-label="Players"></ul>
+      <div class="lobby-actions">
+        <button id="again" class="btn btn-play" type="button">Back to lobby</button>
+        <p class="hint" id="reveal-wait">Waiting for the host…</p>
+      </div>
+      <p class="soon">Clue and voting rounds are coming soon. For now: give it a go out loud!</p>
+    </section>
+  </main>
+
+  <div id="countdown" hidden aria-live="assertive"><span id="count-num">3</span><p>Get ready…</p></div>
+  <div id="toasts" aria-live="polite"></div>
+
+  <script src="/shared/room-kit/fx.js"></script>
+  <script src="/shared/room-kit/lobby.js"></script>
+  <script src="./imposter.js"></script>
+</body>
+</html>
