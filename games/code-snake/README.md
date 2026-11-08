@@ -14,6 +14,9 @@ npm run build:py            # all Python games   (or: bash scripts/build-python-
 ```
 Then refresh the arcade. `web/` is generated: don't edit it, commit it.
 
+## Look
+Restyled to Notebook Paper (graph-paper arena, ink-blue snake, hand-drawn cards); colours/fonts come from `src/paper_style.py` + `src/fonts/` (copied from `shared/python/` by the build). Dark/light follows the system; `ARCADE_THEME=light|dark` forces it on the desktop.
+
 ## What differs from `Prj-00/game_v2.py`
 All guarded by `WEB = sys.platform == "emscripten"`; desktop behaviour is unchanged.
 - `run()` is `async` with `await asyncio.sleep(0)` each frame (required by browsers).

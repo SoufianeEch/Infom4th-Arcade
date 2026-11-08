@@ -17,7 +17,14 @@ if [ ${#ids[@]} -eq 0 ]; then
 fi
 for id in "${ids[@]}"; do
   echo "== building $id"
-  [ -f "games/$id/src/arcade_web.py" ] && cp shared/python/arcade_web.py "games/$id/src/arcade_web.py"
+  if [ -f "games/$id/src/arcade_web.py" ]; then
+    cp shared/python/arcade_web.py "games/$id/src/arcade_web.py"
+    if [ -f "games/$id/src/paper_style.py" ]; then       # Notebook Paper helper + its fonts
+      cp shared/python/paper_style.py "games/$id/src/paper_style.py"
+      mkdir -p "games/$id/src/fonts"
+      cp shared/python/fonts/* "games/$id/src/fonts/"
+    fi
+  fi
   rm -rf "games/$id/src/build" "games/$id/web"
   "$PYGBAG" --build "games/$id/src" > "games/$id/src/.build.log" 2>&1 || { tail -20 "games/$id/src/.build.log"; exit 1; }
   mkdir -p "games/$id/web"

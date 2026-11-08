@@ -42,6 +42,12 @@ Newest entries on top. Update this file with every change.
 
 ## Change log
 
+### 2026-11-08 — pygame games restyled to Notebook Paper + Type Race fix
+- New shared helper `shared/python/paper_style.py` (+ `shared/python/fonts/`: Gaegu, Patrick Hand, Courier Prime, OFL licences): palette (light/dark via `arcade_web.prefers_dark()`), graph-paper background, hand-drawn wobbly outlines, hard-shadow cards, pencil pills, monospace helpers. `scripts/build-python-games.sh` copies it and the fonts into each game's `src/`.
+- Code Snake, Flashcard Sniper and Python Type Race redrawn in that style (checked by rendering every screen headless to PNG, light and dark). DotGothic16 is gone from the pygame games too.
+- **Type Race fix:** the caret and highlight were placed from a single "M" width and drifted with other fonts. Now each character is centred in a fixed-width cell of a real monospace font (Courier Prime) using the font's integer advance, and the highlight/caret are derived from the glyph height. Removed the old settings.json/FontBook font plumbing.
+- Tests: 21 headless Python tests (new: fonts bundled, monospace advance identical for all glyphs, every screen draws); 36 node tests unchanged.
+
 ### 2026-11-07 — v0.6 Notebook Paper (chosen from the design lab)
 - Ported `design-lab/styles/paper.css` to the real arcade. Fonts: Gaegu (headings) + Patrick Hand (text), self-hosted Latin subsets in `shared/fonts/` (OFL). DotGothic16 removed from the web pages (the pygame games keep their bundled copy).
 - `shared/theme.css` = paper tokens (graph-paper SVG background, pencil-blue ink, red margin lines, hand-drawn `--wob-*` corner radii, pencil `.btn`). Light by default; with a dark system setting the same notebook turns "night" (dark paper, light ink) to keep the earlier light/dark requirement.

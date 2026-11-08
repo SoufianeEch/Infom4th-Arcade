@@ -39,15 +39,27 @@ class RaceLogic(unittest.TestCase):
         self.assertEqual((s.i, s.errors), (0, 1))
         self.assertLess(s.accuracy, 100)
 
-    def test_bundled_fonts_resolve(self):
+    def test_paper_fonts_are_bundled_and_monospace_code_font_is_fixed_width(self):
         pygame.init()
-        book = race.FontBook(race.DEFAULT_SETTINGS)
-        self.assertIsNotNone(book.get(20))
-        for weight in ("regular", "medium", "bold"):
-            for files in (race.FONT_FILES, race.UI_FONT_FILES):
-                path = race.find_source_code_pro(weight, files)
-                self.assertTrue(path and Path(path).exists(), (weight, files))
-        self.assertTrue(book.resolve("DotGothic16", "bold").endswith("DotGothic16-Latin.ttf"))
+        fonts = Path(race.ps.FONT_DIR)
+        for name in ("Gaegu-Bold.ttf", "PatrickHand-Regular.ttf", "CourierPrime-Regular.ttf", "CourierPrime-Bold.ttf"):
+            self.assertTrue((fonts / name).exists(), name)
+        code = race.ps.mono(34)
+        adv = race.ps.advance(code)
+        self.assertGreater(adv, 8)
+        # every printable ASCII glyph advances by the same amount, so the caret can never drift
+        widths = {code.metrics(ch)[0][4] for ch in "iWm.,;:()[]{}\"'_-+=<>0123456789abcxyzXYZ"}
+        self.assertEqual(widths, {adv})
+
+    def test_caret_and_highlight_cells_line_up_with_glyphs(self):
+        app = race.App()
+        s = app.session
+        s.started = True
+        s.i = 3
+        app.anim = 0.1
+        app.draw()          # must not raise; geometry is derived from one advance + one glyph height
+        code = race.ps.mono(34)
+        self.assertEqual(race.ps.advance(code), code.metrics("M")[0][4])
 
     def test_app_finishes_a_run_and_reports(self):
         race.save_best = lambda record: None      # do not write best.json while testing

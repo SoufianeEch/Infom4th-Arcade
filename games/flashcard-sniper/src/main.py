@@ -2,7 +2,7 @@
 FLASHCARD SNIPER - learn Python by shooting the right answer
 -------------------------------------------------------------
 Install:  pip install pygame-ce
-Run:      python main.py            (desktop)
+Run:      python main.py            (desktop; ARCADE_THEME=light|dark forces the colours)
 Browser:  npm run build:py           (see ../README.md)
 
 How to play:
@@ -27,25 +27,8 @@ import arcade_web   # no-ops on the desktop; talks to the arcade hub in the brow
 BEST_KEY = "infom4th.flashcard-sniper.best"
 
 
-# ---------------------------------------------------------------- fonts (DotGothic16, bundled in fonts/)
-FONT_DIR = Path(__file__).resolve().parent / "fonts"
-PIXEL_FONT = "DotGothic16-Latin.ttf"
+import paper_style as ps   # Notebook Paper look shared by the arcade games
 
-
-def _font(size):
-    try:
-        return pygame.font.Font(str(FONT_DIR / PIXEL_FONT), size)
-    except Exception:                        # missing file: fall back to pygame's built-in font
-        return pygame.font.Font(None, size)
-
-
-def ui_font(size):
-    """DotGothic16 is a pixel font: sizes that are multiples of 8 stay crisp. `size` is the old built-in-font size."""
-    return _font(max(16, round(size * 0.8 / 8) * 8))
-
-
-def mono_font(size):
-    return _font(max(16, round(size / 8) * 8))
 # ---------------------------------------------------------------- settings
 WIDTH, HEIGHT = 960, 600
 FPS = 60
@@ -97,15 +80,10 @@ CARDS = [
 ]
 
 # ------------------------------------------------------------------ colors
-BG_TOP = (18, 22, 38)
-BG_BOTTOM = (40, 30, 60)
-WHITE = (240, 240, 245)
-GREY = (150, 155, 175)
-CARD = (70, 90, 160)
-CARD_EDGE = (140, 160, 235)
-GREEN = (70, 200, 120)
-RED = (230, 80, 90)
-GOLD = (250, 205, 90)
+# Notebook Paper colours (light/dark by system)
+WHITE, GREY = ps.INK, ps.INK_SOFT
+CARD, CARD_EDGE = ps.CARD, ps.INK
+GREEN, RED, GOLD = ps.GREEN, ps.RED, ps.YELLOW
 
 
 # ------------------------------------------------------------------ helpers
@@ -130,10 +108,8 @@ def draw_text_center(surface, text, font, color, center):
 
 
 def make_background():
-    """Flat background (no gradient)."""
-    surf = pygame.Surface((WIDTH, HEIGHT))
-    surf.fill(BG_TOP)
-    return surf
+    """Graph paper (flat colours)."""
+    return ps.grid_surface(WIDTH, HEIGHT)
 
 
 # ------------------------------------------------------------------ target
@@ -156,18 +132,17 @@ class Target:
             self.rect.clamp_ip(pygame.Rect(0, 0, WIDTH, HEIGHT))
 
     def draw(self, surface, font, state="normal"):
-        fill, edge = CARD, CARD_EDGE
+        fill, edge = ps.CARD, ps.INK
         if state == "correct":
-            fill, edge = (40, 140, 85), GREEN
+            fill, edge = ps.HL, ps.GREEN
         elif state == "wrong":
-            fill, edge = (150, 50, 60), RED
+            fill, edge = ps.CARD, ps.RED
         elif state == "dim":
-            fill, edge = (45, 50, 80), (80, 85, 120)
-        pygame.draw.rect(surface, (6, 10, 30), self.rect.move(0, 7), border_radius=12)   # hard 3D shadow
-        pygame.draw.rect(surface, fill, self.rect, border_radius=12)
-        pygame.draw.rect(surface, edge, self.rect, width=3, border_radius=12)
-        pygame.draw.line(surface, (255, 255, 255), (self.rect.left + 12, self.rect.top + 6), (self.rect.right - 12, self.rect.top + 6), 2)
-        draw_text_center(surface, self.text, font, WHITE, self.rect.center)
+            fill, edge = ps.PAPER, ps.INK_FAINT
+        ps.card(surface, self.rect, fill=fill, border=edge, seed=self.rect.y * 3 + len(self.text), width=3 if state in ("correct", "wrong") else 2)
+        color = ps.INK_FAINT if state == "dim" else ps.INK
+        font = ps.mono(30, bold=True) if not any(ch.isalpha() for ch in self.text) else font
+        draw_text_center(surface, self.text, font, color, self.rect.center)
 
 
 # -------------------------------------------------------------------- game
@@ -179,10 +154,10 @@ class Game:
         self.clock = pygame.time.Clock()
         pygame.mouse.set_visible(False)  # we draw our own crosshair
 
-        self.font_big = ui_font(72)
-        self.font_mid = ui_font(40)
-        self.font_card = ui_font(32)
-        self.font_small = ui_font(26)
+        self.font_big = ps.title(76)
+        self.font_mid = ps.body(36)
+        self.font_card = ps.title(34)
+        self.font_small = ps.body(26)
 
         self.background = make_background()
         # The "darkness" layer for the scope effect (has per-pixel alpha)
@@ -284,11 +259,13 @@ class Game:
         """Draw everything that lives 'under' the scope."""
         self.screen.blit(self.background, (0, 0))
 
-        # Flashcard (the question) at the top
+        # Flashcard (the question) at the top: a paper index card with a red top line
         card_rect = pygame.Rect(60, 70, WIDTH - 120, 90)
-        pygame.draw.rect(self.screen, (30, 35, 60), card_rect, border_radius=14)
-        pygame.draw.rect(self.screen, GOLD, card_rect, width=3, border_radius=14)
-        draw_text_center(self.screen, self.card["q"], self.font_mid, WHITE, card_rect.center)
+        ps.card(self.screen, card_rect, seed=7)
+        pygame.draw.line(self.screen, ps.RED, (card_rect.left + 14, card_rect.top + 26), (card_rect.right - 14, card_rect.top + 26), 2)
+        lines = wrap_text(self.card["q"], self.font_mid, card_rect.w - 40)
+        for i, line in enumerate(lines[:2]):
+            draw_text_center(self.screen, line, self.font_mid, ps.INK, (card_rect.centerx, card_rect.top + 52 + i * 30 - (0 if len(lines) > 1 else -6)))
 
         for target in self.targets:
             if reveal:
@@ -301,34 +278,45 @@ class Game:
             target.draw(self.screen, self.font_card, state)
 
     def draw_hud(self):
-        self.screen.blit(self.font_small.render(f"Score: {self.score}", True, WHITE), (20, 15))
-        self.screen.blit(self.font_small.render(f"Best: {self.high_score}", True, GREY), (20, 40))
-        self.screen.blit(self.font_small.render(f"Streak: {self.streak}", True, GOLD), (150, 15))
+        # the scope overlay is dark, so the HUD text switches to the card colour while aiming
+        aiming = self.state == "playing"
+        ink, soft, accent = (ps.CARD, ps.GRID, ps.CARD) if aiming else (ps.INK, ps.INK_SOFT, ps.BLUE)
+        self.screen.blit(self.font_small.render(f"Score: {self.score}", True, ink), (20, 12))
+        self.screen.blit(self.font_small.render(f"Best: {self.high_score}", True, soft), (20, 40))
+        self.screen.blit(self.font_small.render(f"Streak: {self.streak}", True, accent), (170, 12))
         # lives as hearts (little red circles)
         for i in range(self.lives):
-            pygame.draw.circle(self.screen, RED, (WIDTH - 35 - i * 34, 28), 12)
+            cx, cy = WIDTH - 35 - i * 34, 28
+            pygame.draw.circle(self.screen, ps.RED, (cx, cy), 12)
+            pygame.draw.circle(self.screen, ps.INK, (cx, cy), 12, 2)
         # timer bar
         ratio = max(self.time_left, 0) / QUESTION_TIME
-        bar = pygame.Rect(60, 175 - 8, int((WIDTH - 120) * ratio), 6)
-        color = GREEN if ratio > 0.4 else RED
-        pygame.draw.rect(self.screen, color, bar, border_radius=3)
+        track = pygame.Rect(60, 167, WIDTH - 120, 10)
+        pygame.draw.rect(self.screen, ps.CARD, track, border_radius=5)
+        if ratio > 0:
+            pygame.draw.rect(self.screen, ps.BLUE if ratio > 0.4 else ps.RED, (60, 167, max(10, int(track.w * ratio)), 10), border_radius=5)
+        pygame.draw.rect(self.screen, ps.INK, track, width=2, border_radius=5)
 
     def draw_scope(self):
-        """Darken everything except a circle around the aim point + crosshair."""
+        """Dim everything except a circle around the aim point (like looking through a pencil-drawn scope)."""
         ax, ay = self.aim_point()
-        self.darkness.fill((0, 0, 0, 235))
+        self.darkness.fill((*ps.INK_DIM, 238))
         pygame.draw.circle(self.darkness, (0, 0, 0, 0), (ax, ay), SCOPE_RADIUS)  # the hole
         self.screen.blit(self.darkness, (0, 0))
 
-        pygame.draw.circle(self.screen, (10, 10, 10), (ax, ay), SCOPE_RADIUS, width=6)
-        pygame.draw.line(self.screen, RED, (ax - SCOPE_RADIUS, ay), (ax + SCOPE_RADIUS, ay), 1)
-        pygame.draw.line(self.screen, RED, (ax, ay - SCOPE_RADIUS), (ax, ay + SCOPE_RADIUS), 1)
-        pygame.draw.circle(self.screen, RED, (ax, ay), 3)
+        pygame.draw.circle(self.screen, ps.INK, (ax, ay), SCOPE_RADIUS, width=5)
+        pygame.draw.line(self.screen, ps.RED, (ax - SCOPE_RADIUS, ay), (ax + SCOPE_RADIUS, ay), 2)
+        pygame.draw.line(self.screen, ps.RED, (ax, ay - SCOPE_RADIUS), (ax, ay + SCOPE_RADIUS), 2)
+        pygame.draw.circle(self.screen, ps.RED, (ax, ay), 4)
+
+    def paper_page(self):
+        self.screen.blit(self.background, (0, 0))
+        pygame.draw.line(self.screen, ps.RED, (70, 0), (70, HEIGHT), 2)
 
     def draw(self):
         if self.state == "menu":
-            self.screen.blit(self.background, (0, 0))
-            draw_text_center(self.screen, "FLASHCARD SNIPER", self.font_big, GOLD, (WIDTH // 2, 170))
+            self.paper_page()
+            draw_text_center(self.screen, "FLASHCARD SNIPER", ps.title(96), ps.BLUE, (WIDTH // 2, 150))
             lines = [
                 "Read the Python question.",
                 "Aim your scope with the mouse.",
@@ -336,8 +324,11 @@ class Game:
                 f"{LIVES} lives. Faster shots = more points.",
             ]
             for i, line in enumerate(lines):
-                draw_text_center(self.screen, line, self.font_mid, WHITE, (WIDTH // 2, 270 + i * 44))
-            draw_text_center(self.screen, "Click to start", self.font_mid, GREEN, (WIDTH // 2, 500))
+                draw_text_center(self.screen, line, self.font_mid, ps.INK, (WIDTH // 2, 250 + i * 42))
+            btn = pygame.Rect(0, 0, 360, 62)
+            btn.center = (WIDTH // 2, 480)
+            ps.pill(self.screen, btn, ps.BLUE)
+            draw_text_center(self.screen, "Click to start", ps.title(44), ps.ON_BLUE, btn.center)
 
         elif self.state == "playing":
             self.draw_scene(reveal=False)
@@ -347,21 +338,23 @@ class Game:
         elif self.state == "reveal":
             self.draw_scene(reveal=True)       # no scope: the card "flips" open
             self.draw_hud()
-            draw_text_center(self.screen, self.message, self.font_big, self.message_color,
-                             (WIDTH // 2, 28))
+            draw_text_center(self.screen, self.message, ps.title(52), self.message_color, (WIDTH // 2, 32))
 
         elif self.state == "gameover":
-            self.screen.blit(self.background, (0, 0))
-            draw_text_center(self.screen, "GAME OVER", self.font_big, RED, (WIDTH // 2, 200))
-            draw_text_center(self.screen, f"Score: {self.score}", self.font_mid, WHITE, (WIDTH // 2, 290))
-            draw_text_center(self.screen, f"Best: {self.high_score}", self.font_mid, GOLD, (WIDTH // 2, 340))
-            draw_text_center(self.screen, "Click to play again", self.font_mid, GREEN, (WIDTH // 2, 440))
+            self.paper_page()
+            draw_text_center(self.screen, "GAME OVER", ps.title(100), ps.RED, (WIDTH // 2, 190))
+            draw_text_center(self.screen, f"Score: {self.score}", self.font_mid, ps.INK, (WIDTH // 2, 290))
+            draw_text_center(self.screen, f"Best: {self.high_score}", self.font_mid, ps.BLUE, (WIDTH // 2, 340))
+            btn = pygame.Rect(0, 0, 420, 62)
+            btn.center = (WIDTH // 2, 450)
+            ps.pill(self.screen, btn, ps.BLUE)
+            draw_text_center(self.screen, "Click to play again", ps.title(44), ps.ON_BLUE, btn.center)
 
-        # crosshair cursor on non-scope screens
+        # pencil-circle cursor on non-scope screens
         if self.state in ("menu", "reveal", "gameover"):
             mx, my = pygame.mouse.get_pos()
-            pygame.draw.circle(self.screen, RED, (mx, my), 10, width=2)
-            pygame.draw.circle(self.screen, RED, (mx, my), 2)
+            pygame.draw.circle(self.screen, ps.RED, (mx, my), 11, width=2)
+            pygame.draw.circle(self.screen, ps.RED, (mx, my), 2)
 
         pygame.display.flip()
 

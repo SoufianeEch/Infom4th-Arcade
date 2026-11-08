@@ -2,7 +2,7 @@
 CODE SNAKE - complete the code, eat the right piece, dodge the bugs
 --------------------------------------------------------------------
 Install:  pip install pygame-ce
-Run:      python main.py            (desktop)
+Run:      python main.py            (desktop; ARCADE_THEME=light|dark forces the colours)
 Browser:  pygbag --build .          (see ../README.md)
 
 HOW TO PLAY
@@ -35,53 +35,9 @@ from pathlib import Path
 
 import pygame
 
-# ---------------------------------------------------------------- fonts (DotGothic16, bundled in fonts/)
-FONT_DIR = Path(__file__).resolve().parent / "fonts"
-PIXEL_FONT = "DotGothic16-Latin.ttf"
-
-
-def _font(size):
-    try:
-        return pygame.font.Font(str(FONT_DIR / PIXEL_FONT), size)
-    except Exception:                        # missing file: fall back to pygame's built-in font
-        return pygame.font.Font(None, size)
-
-
-def ui_font(size):
-    """DotGothic16 is a pixel font: sizes that are multiples of 8 stay crisp. `size` is the old built-in-font size."""
-    return _font(max(16, round(size * 0.8 / 8) * 8))
-
-
-def mono_font(size):
-    return _font(max(16, round(size / 8) * 8))
-
-# ---------------------------------------------------------------- web (pygbag) support
-# The same file runs on the desktop (python main.py) and in the browser (pygbag).
-# Everything browser-specific is behind WEB so desktop behaviour is unchanged.
-WEB = sys.platform == "emscripten"
-if WEB:
-    from platform import window
-
-
-def js(code):
-    """Run a line of JavaScript in the browser; no-op on the desktop."""
-    if WEB:
-        try:
-            window.eval(code)
-        except Exception:
-            pass
-
-
-def report_score(score):
-    """Tell the arcade hub the final score (it saves it to the shared leaderboard)."""
-    if score > 0:
-        js("window.parent!==window&&window.parent.postMessage("
-           "{type:'arcade:score',value:%d,label:'points'},location.origin)" % int(score))
-
-
-def exit_to_arcade():
-    js("window.parent!==window&&window.parent.postMessage({type:'arcade:exit'},location.origin)")
-
+import arcade_web   # browser glue (no-ops on the desktop)
+import paper_style as ps   # Notebook Paper look shared by the arcade games
+from arcade_web import WEB, window, report_score, exit_to_arcade
 
 # ---------------------------------------------------------------- settings
 W, H = 1000, 640
@@ -170,12 +126,9 @@ NEW_RULE = {
     4: "NEW: the walls are DEADLY!",
 }
 
-# ------------------------------------------------------------------ colors
-BG_TOP, BG_BOTTOM = (14, 18, 32), (36, 26, 58)
-WHITE, GREY = (240, 240, 245), (140, 146, 170)
-GREEN, DKGREEN = (90, 225, 120), (40, 130, 80)
-RED, GOLD, ICE, ORANGE = (235, 80, 90), (250, 205, 90), (120, 220, 255), (255, 150, 60)
-FOOD_FILL, FOOD_EDGE = (62, 84, 160), (140, 160, 235)
+# ------------------------------------------------------------------ colors (Notebook Paper, light/dark by system)
+WHITE, GREY = ps.INK, ps.INK_SOFT            # default text colours are ink on paper
+GREEN, RED, ORANGE, GOLD, ICE = ps.GREEN, ps.RED, ps.ORANGE, ps.YELLOW, ps.BLUE
 
 
 # ------------------------------------------------------------------ helpers
@@ -189,10 +142,8 @@ def make_tone(freq, ms, volume=0.25):
 
 
 def make_background():
-    """Flat background (no gradient)."""
-    surf = pygame.Surface((W, H))
-    surf.fill(BG_TOP)
-    return surf
+    """Graph paper (flat colours)."""
+    return ps.grid_surface(W, H)
 
 
 def load_scores():
@@ -231,13 +182,14 @@ class Game:
         self.canvas = pygame.Surface((W, H))
         self.clock = pygame.time.Clock()
 
-        self.f_title = ui_font(96)
-        self.f_big = ui_font(60)
-        self.f_mid = ui_font(38)
-        self.f_small = ui_font(24)
-        # system fonts do not exist in the browser build: fall back to pygame's bundled font
-        self.f_code = mono_font(22)
-        self.f_foods = [ui_font(s) for s in (28, 24, 20, 17)]
+        self.f_title = ps.title(120)
+        self.f_big = ps.title(60)
+        self.f_hud = ps.title(44)
+        self.f_mid = ps.body(34)
+        self.f_small = ps.body(24)
+        self.f_code = ps.mono(23)                 # monospace: the blank and comments line up
+        self.f_foods = [ps.title(s) for s in (34, 30, 26, 22, 18)]
+        self.f_ops = [ps.mono(s, bold=True) for s in (34, 30, 26, 22)]
 
         self.background = make_background()
         self.sounds = {}
@@ -588,7 +540,7 @@ class Game:
     def code_text(self, surf, text, x, y):
         """Draw code text; anything after '#' is a grey comment. Returns the new x."""
         code, sep, comment = text.partition("#")
-        for part, color in ((code, WHITE), (sep + comment, GREY)):
+        for part, color in ((code, ps.INK), (sep + comment, ps.INK_FAINT)):
             if part:
                 img = self.f_code.render(part, True, color)
                 surf.blit(img, (x, y))
@@ -597,40 +549,47 @@ class Game:
 
     def draw_code_panel(self, surf):
         panel = pygame.Rect(24, 8, 690, 106)
-        pygame.draw.rect(surf, (22, 26, 46), panel, border_radius=12)
-        pygame.draw.rect(surf, GOLD, panel, width=3, border_radius=12)
+        ps.card(surf, panel, seed=3)
         lines = self.snippet["code"]
-        y = panel.centery - len(lines) * 15
+        y = panel.centery - len(lines) * 15 + 3
         for line in lines:
-            x = panel.left + 18
+            x = panel.left + 22
             if "___" in line:
                 pre, post = line.split("___", 1)
                 x = self.code_text(surf, pre, x, y)
                 if self.filled:
-                    w = self.f_code.size(self.snippet["answer"])[0] + 10
-                    self.text(surf, self.snippet["answer"], self.f_code, GREEN, (x + w // 2, y + 13))
+                    w = self.f_code.size(self.snippet["answer"])[0] + 14
+                    pygame.draw.rect(surf, ps.HL, (x - 2, y, w, 28), border_radius=6)
+                    self.text(surf, self.snippet["answer"], self.f_code, ps.GREEN, (x - 2 + w // 2, y + 14))
                 else:
-                    w = 100
-                    pulse = 140 + int(100 * abs(math.sin(self.time_alive * 4)))
-                    pygame.draw.rect(surf, (pulse, int(pulse * 0.8), 60), (x, y - 1, w, 27), width=2, border_radius=5)
-                    self.text(surf, "?", self.f_code, GOLD, (x + w // 2, y + 12))
+                    w = 104
+                    box = pygame.Rect(x - 2, y, w, 28)
+                    pygame.draw.rect(surf, ps.HL, box, border_radius=6)
+                    if int(self.time_alive * 3) % 2 == 0:                      # a pencil-circled blank that blinks
+                        ps.sketch_rect(surf, box, ps.RED, width=2, seed=11, amount=1.0)
+                    self.text(surf, "?", self.f_code, ps.INK, box.center)
                 self.code_text(surf, post, x + w, y)
             else:
                 self.code_text(surf, line, x, y)
             y += 30
 
     def draw_hud(self, surf):
-        x = 730
-        self.text(surf, f"PHASE {self.phase}", self.f_mid, WHITE, (x + 62, 26))
-        img = self.f_mid.render(f"{self.score}", True, GOLD)
-        surf.blit(img, img.get_rect(topright=(W - 24, 12)))
+        x = 734
+        self.text(surf, f"PHASE {self.phase}", self.f_hud, ps.INK, (x + 62, 26))
+        img = self.f_hud.render(f"{self.score}", True, ps.BLUE)
+        surf.blit(img, img.get_rect(topright=(W - 24, 6)))
         for i in range(self.lives):
-            pygame.draw.circle(surf, RED, (x + 10 + i * 30, 66), 11)
+            cx, cy = x + 12 + i * 30, 68
+            pygame.draw.circle(surf, ps.RED, (cx, cy), 11)
+            pygame.draw.circle(surf, ps.INK, (cx, cy), 11, 2)
         best = self.scores[0]["score"] if self.scores else 0
-        self.text(surf, f"best {best}", self.f_small, GREY, (W - 70, 66))
+        self.text(surf, f"best {best}", self.f_small, ps.INK_SOFT, (W - 70, 68))
         ratio = max(self.time_left, 0) / self.phase_time
-        pygame.draw.rect(surf, (40, 44, 70), (x, 90, W - 24 - x, 14), border_radius=7)
-        pygame.draw.rect(surf, GREEN if ratio > 0.35 else RED, (x, 90, int((W - 24 - x) * ratio), 14), border_radius=7)
+        bar = pygame.Rect(x, 88, W - 24 - x, 16)
+        pygame.draw.rect(surf, ps.CARD, bar, border_radius=8)
+        if ratio > 0:
+            pygame.draw.rect(surf, ps.BLUE if ratio > 0.35 else ps.RED, (x, 88, max(16, int(bar.w * ratio)), 16), border_radius=8)
+        pygame.draw.rect(surf, ps.INK, bar, width=2, border_radius=8)
 
     def draw_snake(self, surf):
         if self.invuln > 0 and int(self.time_alive * 12) % 2 == 0:
@@ -638,58 +597,57 @@ class Game:
         n = len(self.snake)
         for i in range(n - 1, -1, -1):
             c, r = self.snake[i]
-            t = i / max(n - 1, 1)
-            color = tuple(int(GREEN[k] + (DKGREEN[k] - GREEN[k]) * t) for k in range(3))
             rect = pygame.Rect(AX + c * CELL + 2, AY + r * CELL + 2, CELL - 4, CELL - 4)
-            pygame.draw.rect(surf, color, rect, border_radius=8 if i else 11)
+            fill = ps.BLUE if i % 2 == 0 else ps.INK_SOFT if ps.DARK else (96, 140, 255)
+            pygame.draw.rect(surf, fill, rect, border_radius=8 if i else 11)
+            pygame.draw.rect(surf, ps.INK, rect, width=2, border_radius=8 if i else 11)
         # eyes on the head
         hx, hy = cell_center(*self.snake[0])
         dx, dy = self.dir
         for side in (-1, 1):
             ex = hx + dx * 6 + (-dy) * 6 * side
             ey = hy + dy * 6 + dx * 6 * side
-            pygame.draw.circle(surf, WHITE, (ex, ey), 4)
-            pygame.draw.circle(surf, (10, 10, 20), (ex + dx, ey + dy), 2)
+            pygame.draw.circle(surf, (255, 255, 255), (ex, ey), 4)
+            pygame.draw.circle(surf, (20, 30, 70), (ex + dx, ey + dy), 2)
 
     def draw_bug(self, surf, bug):
         x, y = cell_center(*bug)
         for off in (-6, 0, 6):
-            pygame.draw.line(surf, (60, 30, 10), (x - 11, y + off), (x + 11, y + off), 2)
-        pygame.draw.line(surf, (60, 30, 10), (x - 3, y - 8), (x - 7, y - 13), 2)
-        pygame.draw.line(surf, (60, 30, 10), (x + 3, y - 8), (x + 7, y - 13), 2)
-        pygame.draw.circle(surf, ORANGE, (x, y), 9)
-        pygame.draw.circle(surf, (120, 50, 10), (x, y), 9, 2)
-        pygame.draw.circle(surf, RED, (x - 3, y - 3), 2)
-        pygame.draw.circle(surf, RED, (x + 3, y - 3), 2)
+            pygame.draw.line(surf, ps.INK, (x - 11, y + off), (x + 11, y + off), 2)
+        pygame.draw.line(surf, ps.INK, (x - 3, y - 8), (x - 7, y - 13), 2)
+        pygame.draw.line(surf, ps.INK, (x + 3, y - 8), (x + 7, y - 13), 2)
+        pygame.draw.circle(surf, ps.ORANGE, (x, y), 9)
+        pygame.draw.circle(surf, ps.INK, (x, y), 9, 2)
+        pygame.draw.circle(surf, ps.INK, (x - 3, y - 3), 2)
+        pygame.draw.circle(surf, ps.INK, (x + 3, y - 3), 2)
 
     def draw_world(self, surf):
         surf.blit(self.background, (0, 0))
-        pygame.draw.rect(surf, (10, 12, 24), ARENA, border_radius=6)
+        pygame.draw.rect(surf, ps.CARD, ARENA)
         for c in range(COLS + 1):
-            pygame.draw.line(surf, (20, 24, 42), (AX + c * CELL, AY), (AX + c * CELL, AY + ROWS * CELL))
+            pygame.draw.line(surf, ps.GRID, (AX + c * CELL, AY), (AX + c * CELL, AY + ROWS * CELL))
         for r in range(ROWS + 1):
-            pygame.draw.line(surf, (20, 24, 42), (AX, AY + r * CELL), (AX + COLS * CELL, AY + r * CELL))
-        wall_color = RED if self.walls_deadly else (70, 75, 120)
-        pygame.draw.rect(surf, wall_color, ARENA, width=4, border_radius=6)
+            pygame.draw.line(surf, ps.GRID, (AX, AY + r * CELL), (AX + COLS * CELL, AY + r * CELL))
+        if self.walls_deadly:
+            pygame.draw.rect(surf, ps.RED, ARENA.inflate(8, 8), width=5, border_radius=4)
+        ps.sketch_rect(surf, ARENA, ps.RED if self.walls_deadly else ps.INK, width=3, seed=5, amount=1.2)
 
         for food in self.foods:
             r = food["rect"]
             px = pygame.Rect(AX + r.x * CELL + 2, AY + r.y * CELL + 2, r.w * CELL - 4, r.h * CELL - 4)
-            fill, edge = FOOD_FILL, FOOD_EDGE
+            fill, edge = ps.CARD, ps.INK
             if self.state == "clear":
-                fill, edge = ((40, 140, 85), GREEN) if food["ok"] else ((35, 40, 70), (70, 75, 110))
-            pygame.draw.rect(surf, (6, 10, 30), px.move(0, 6), border_radius=10)      # hard 3D shadow
-            pygame.draw.rect(surf, fill, px, border_radius=10)
-            pygame.draw.rect(surf, edge, px, width=3, border_radius=10)
-            pygame.draw.line(surf, (255, 255, 255), (px.left + 10, px.top + 5), (px.right - 10, px.top + 5), 2)   # lit top edge
-            font = next((f for f in self.f_foods if f.size(food["text"])[0] <= px.w - 12), self.f_foods[-1])
-            self.text(surf, food["text"], font, WHITE, px.center)
+                fill, edge = (ps.HL, ps.GREEN) if food["ok"] else (ps.PAPER, ps.INK_FAINT)
+            ps.card(surf, px, fill=fill, border=edge, seed=r.x * 7 + r.y)
+            fonts = self.f_foods if any(ch.isalpha() for ch in food["text"]) else self.f_ops      # operators read better in the monospace font
+            font = next((f for f in fonts if f.size(food["text"])[0] <= px.w - 14), fonts[-1])
+            self.text(surf, food["text"], font, ps.INK if self.state != "clear" or food["ok"] else ps.INK_FAINT, px.center)
 
         for c, r in self.obst:
-            px = pygame.Rect(AX + c * CELL + 2, AY + r * CELL + 2, CELL - 4, CELL - 4)
-            pygame.draw.rect(surf, (140, 30, 45), px, border_radius=5)
-            pygame.draw.rect(surf, RED, px, width=2, border_radius=5)
-            self.text(surf, "!", self.f_small, WHITE, px.center)
+            px = pygame.Rect(AX + c * CELL + 3, AY + r * CELL + 3, CELL - 6, CELL - 6)
+            pygame.draw.rect(surf, ps.RED, px, border_radius=5)
+            pygame.draw.rect(surf, ps.INK, px, width=2, border_radius=5)
+            self.text(surf, "!", self.f_small, (255, 255, 255), px.center)
 
         for bug in self.bugs:
             self.draw_bug(surf, bug)
@@ -698,72 +656,82 @@ class Game:
         for pos, _, life, color in self.particles:
             pygame.draw.circle(surf, color, (int(pos.x), int(pos.y)), max(1, int(life * 7)))
         for txt, pos, life, color in self.popups:
-            self.text(surf, txt, self.f_mid, color, (int(pos.x), int(pos.y) - 24))
+            self.text(surf, txt, self.f_mid, ps.INK if color in (WHITE, GREY) else color, (int(pos.x), int(pos.y) - 24))
 
         self.draw_code_panel(surf)
         self.draw_hud(surf)
 
         text, t = self.banner
         if text and t > 0 and self.state == "playing":
-            box = pygame.Rect(0, 0, 640, 54)
+            box = pygame.Rect(0, 0, 660, 54)
             box.center = (ARENA.centerx, ARENA.top + 60)
-            pygame.draw.rect(surf, (0, 0, 0), box, border_radius=12)
-            pygame.draw.rect(surf, GOLD, box, width=2, border_radius=12)
-            self.text(surf, text, self.f_mid, GOLD, box.center)
+            ps.card(surf, box, fill=ps.HL, seed=9)
+            self.text(surf, text, self.f_mid, ps.INK, box.center)
         if self.state == "clear":
-            box = pygame.Rect(0, 0, 720, 90)
+            box = pygame.Rect(0, 0, 740, 100)
             box.center = (ARENA.centerx, ARENA.centery)
-            pygame.draw.rect(surf, (0, 0, 0), box, border_radius=14)
-            pygame.draw.rect(surf, GREEN, box, width=3, border_radius=14)
-            self.text(surf, "PHASE CLEARED!", self.f_big, GREEN, (box.centerx, box.top + 28))
-            self.text(surf, self.explain, self.f_mid, WHITE, (box.centerx, box.top + 64))
+            ps.card(surf, box, border=ps.GREEN, seed=13, width=3)
+            self.text(surf, "PHASE CLEARED!", self.f_big, ps.GREEN, (box.centerx, box.top + 30))
+            self.text(surf, self.explain, self.f_mid, ps.INK, (box.centerx, box.top + 70))
         if self.paused:
-            self.text(surf, "PAUSED  (P to resume)", self.f_big, WHITE, ARENA.center)
+            box = pygame.Rect(0, 0, 460, 90)
+            box.center = ARENA.center
+            ps.card(surf, box, seed=21)
+            self.text(surf, "PAUSED  (P to resume)", self.f_big, ps.INK, box.center)
 
     def draw_leaderboard(self, surf, x, y, limit=5, highlight=None):
-        self.text(surf, "LEADERBOARD", self.f_mid, GOLD, (x, y))
+        self.text(surf, "LEADERBOARD", self.f_big, ps.RED, (x, y))
         if not self.scores:
-            self.text(surf, "no scores yet - be the first!", self.f_small, GREY, (x, y + 40))
+            self.text(surf, "no scores yet - be the first!", self.f_small, ps.INK_SOFT, (x, y + 46))
         for i, s in enumerate(self.scores[:limit]):
-            color = GREEN if s is highlight else WHITE
-            self.text(surf, f"{i + 1}. {s['name']:<8} {s['score']:>6}", self.f_mid, color, (x, y + 40 + i * 30))
+            color = ps.GREEN if s is highlight else ps.INK
+            self.text(surf, f"{i + 1}. {s['name']:<8} {s['score']:>6}", self.f_mid, color, (x, y + 46 + i * 32))
+
+    def paper_page(self, s):
+        """Menu / game-over backdrop: graph paper with the red margin line."""
+        s.blit(self.background, (0, 0))
+        pygame.draw.line(s, ps.RED, (70, 0), (70, H), 2)
 
     def draw(self):
         s = self.canvas
         if self.state == "menu":
-            s.blit(self.background, (0, 0))
-            self.text(s, "CODE SNAKE", self.f_title, GREEN, (W // 2, 90))
-            self.text(s, "Fill the blank. Eat the right code. Survive the bugs.", self.f_mid, GREY, (W // 2, 150))
-            tips = ["Arrow keys / WASD to steer",
+            self.paper_page(s)
+            self.text(s, "CODE SNAKE", self.f_title, ps.BLUE, (W // 2, 92))
+            self.text(s, "Fill the blank. Eat the right code. Survive the bugs.", self.f_mid, ps.INK_SOFT, (W // 2, 160))
+            tips = ["Arrow keys / WASD (or swipe) to steer",
                     "Eat the block that completes the code",
                     "Wrong block = lose a life",
                     "Bugs, SyntaxErrors and deadly walls appear as you progress"]
             for i, tip in enumerate(tips):
-                self.text(s, tip, self.f_mid, WHITE, (W // 2, 225 + i * 38))
-            self.text(s, "Press SPACE to start", self.f_big, GOLD, (W // 2, 410))
-            self.draw_leaderboard(s, W // 2, 470, limit=3)
+                self.text(s, tip, self.f_mid, ps.INK, (W // 2, 232 + i * 38))
+            btn = pygame.Rect(0, 0, 440, 62)
+            btn.center = (W // 2, 424)
+            ps.pill(s, btn, ps.BLUE)
+            self.text(s, "Press SPACE to start", self.f_hud, ps.ON_BLUE, btn.center)
+            self.draw_leaderboard(s, W // 2, 500, limit=3)
         else:
             self.draw_world(s)
             if self.state in ("name", "gameover"):
                 veil = pygame.Surface((W, H), pygame.SRCALPHA)
-                veil.fill((0, 0, 0, 205))
+                veil.fill((*ps.PAPER, 235))
                 s.blit(veil, (0, 0))
+                pygame.draw.line(s, ps.RED, (70, 0), (70, H), 2)
                 if self.state == "name":
-                    self.text(s, "NEW HIGH SCORE!", self.f_title, GOLD, (W // 2, 190))
-                    self.text(s, f"{self.score} points - reached phase {self.phase}", self.f_big, WHITE, (W // 2, 270))
-                    self.text(s, "Type your name + Enter:", self.f_mid, GREY, (W // 2, 350))
+                    self.text(s, "NEW HIGH SCORE!", self.f_title, ps.RED, (W // 2, 190))
+                    self.text(s, f"{self.score} points - reached phase {self.phase}", self.f_big, ps.INK, (W // 2, 280))
+                    self.text(s, "Type your name + Enter:", self.f_mid, ps.INK_SOFT, (W // 2, 350))
                     cursor = "_" if (pygame.time.get_ticks() // 400) % 2 == 0 else " "
-                    self.text(s, self.name_input + cursor, self.f_title, GREEN, (W // 2, 425))
+                    self.text(s, self.name_input + cursor, self.f_title, ps.BLUE, (W // 2, 425))
                 else:
-                    self.text(s, "GAME OVER", self.f_title, RED, (W // 2, 90))
-                    self.text(s, f"Score {self.score}   -   Phase {self.phase}", self.f_big, WHITE, (W // 2, 165))
-                    self.draw_leaderboard(s, W // 2, 235, limit=10, highlight=self.last_rank)
-                    self.text(s, "SPACE: try again     ESC: menu", self.f_mid, GREEN, (W // 2, 610))
+                    self.text(s, "GAME OVER", self.f_title, ps.RED, (W // 2, 90))
+                    self.text(s, f"Score {self.score}   -   Phase {self.phase}", self.f_big, ps.INK, (W // 2, 170))
+                    self.draw_leaderboard(s, W // 2, 245, limit=10, highlight=self.last_rank)
+                    self.text(s, "SPACE: try again     ESC: menu", self.f_mid, ps.BLUE, (W // 2, 610))
 
         ox = oy = 0
         if self.shake > 0:
             ox, oy = random.randint(-6, 6), random.randint(-6, 6)
-        self.screen.fill((0, 0, 0))
+        self.screen.fill(ps.PAPER)
         self.screen.blit(s, (ox, oy))
         pygame.display.flip()
 

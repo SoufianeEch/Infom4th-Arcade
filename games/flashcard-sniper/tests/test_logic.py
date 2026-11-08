@@ -54,14 +54,21 @@ class SniperLogic(unittest.TestCase):
         self.assertEqual(g.high_score, 77)
         sniper.arcade_web.exit_to_arcade()    # no-op outside the browser
 
-    def test_geist_fonts_are_bundled_and_load(self):
-        for name in ("DotGothic16-Latin.ttf", "DotGothic16-OFL.txt"):
-            self.assertTrue((Path(sniper.__file__).parent / "fonts" / name).exists(), name)
-        self.assertGreater(sniper.ui_font(40).get_height(), 10)
-        self.assertGreater(sniper.mono_font(22).get_height(), 10)
-        # flat background: every row has the same colour (no gradient)
+    def test_paper_fonts_are_bundled_and_background_is_graph_paper(self):
+        fonts = Path(sniper.ps.FONT_DIR)
+        for name in ("Gaegu-Bold.ttf", "PatrickHand-Regular.ttf", "CourierPrime-Regular.ttf"):
+            self.assertTrue((fonts / name).exists(), name)
+        self.assertGreater(sniper.ps.title(40).get_height(), 10)
         bg = sniper.make_background()
-        self.assertEqual(bg.get_at((0, 0)), bg.get_at((0, bg.get_height() - 1)))
+        self.assertEqual(bg.get_at((5, 5)), sniper.ps.PAPER)           # flat paper colour between the grid lines
+        self.assertEqual(bg.get_at((0, 5)), sniper.ps.GRID)            # a grid line
+
+    def test_every_screen_draws_without_errors(self):
+        g = self.g
+        g.state = "menu"; g.draw()
+        g.reset(); g.next_question(); g.draw()
+        g.state = "reveal"; g.draw()
+        g.state = "gameover"; g.draw()
 
 
 if __name__ == "__main__":

@@ -17,6 +17,7 @@ from pathlib import Path
 import pygame
 
 import arcade_web   # no-ops on the desktop; talks to the arcade hub in the browser
+import paper_style as ps   # Notebook Paper look shared by the arcade games
 
 BEST_KEY = "infom4th.type-race.best"
 
@@ -25,40 +26,13 @@ W, H = 1000, 640
 FPS = 60
 BASE = Path(__file__).resolve().parent
 BEST_FILE = BASE / "best.json"
-SETTINGS_FILE = BASE / "settings.json"
-DEFAULT_SETTINGS = {
-    # A font file path (relative to this folder) or an installed font name.
-    "ui_font": "DotGothic16",
-    "code_font": "DotGothic16",
-}
 
-# Blue/white arcade palette. Dark or light follows the system setting (arcade_web.prefers_dark()).
-if arcade_web.prefers_dark():
-    BG = (7, 16, 48)
-    PANEL = (14, 26, 74)
-    INK = (244, 248, 255)
-    MUTED = (164, 184, 242)
-    LINE = (43, 73, 184)
-    SOFT = (21, 38, 107)
-    TYPED = (92, 112, 176)
-    ACCENT = (127, 166, 255)
-    ACCENT_SOFT = (30, 52, 140)
-    RED = (255, 92, 138)
-    GREEN = (61, 220, 151)
-    EDGE = (4, 10, 34)              # hard 3D shadow under cards and keys
-else:
-    BG = (232, 239, 255)
-    PANEL = (255, 255, 255)
-    INK = (10, 26, 82)
-    MUTED = (63, 84, 152)
-    LINE = (124, 156, 234)
-    SOFT = (220, 231, 255)
-    TYPED = (150, 170, 220)
-    ACCENT = (31, 92, 255)
-    ACCENT_SOFT = (206, 222, 255)
-    RED = (214, 52, 96)
-    GREEN = (18, 150, 100)
-    EDGE = (138, 165, 236)
+# Notebook Paper colours (light/dark by system, see paper_style.py)
+BG, PANEL = ps.PAPER, ps.CARD
+INK, MUTED, LINE = ps.INK, ps.INK_SOFT, ps.INK
+SOFT, TYPED = ps.HL, ps.INK_FAINT
+ACCENT, ACCENT_SOFT = ps.BLUE, ps.HL
+RED, GREEN = ps.RED, ps.GREEN
 
 SNIPPETS = [
     ('print("Hello, world!")', "print & strings"),
@@ -84,105 +58,6 @@ SNIPPETS = [
 FONT_FILES = {w: "DotGothic16-Latin.ttf" for w in ("regular", "medium", "bold")}
 UI_FONT_FILES = FONT_FILES
 FONT_DIRS = [BASE / "fonts"]
-
-
-# ------------------------------------------------------------------ fonts
-def load_settings():
-    """settings.json holds the two font choices. Create it if missing."""
-    data = {}
-    if SETTINGS_FILE.exists():
-        try:
-            loaded = json.loads(SETTINGS_FILE.read_text())
-            if isinstance(loaded, dict):
-                data = loaded
-        except Exception:
-            print(f"[fonts] Could not read {SETTINGS_FILE.name}; using defaults.")
-    else:
-        data = dict(DEFAULT_SETTINGS)
-        try:
-            SETTINGS_FILE.write_text(json.dumps(data, indent=2))
-        except OSError:
-            pass
-    for key, value in DEFAULT_SETTINGS.items():
-        data.setdefault(key, value)
-    return data
-
-
-def find_source_code_pro(weight, files=None):
-    """Find a bundled font file for a weight (name kept for compatibility; now serves DotGothic16)."""
-    files = files or FONT_FILES
-    filename = files.get(weight, files["regular"])
-    for folder in FONT_DIRS:
-        candidate = folder / filename
-        if candidate.exists():
-            return str(candidate)
-    return None
-
-
-class FontBook:
-    """Resolve the UI font and the code font from settings.json.
-
-    Each setting can be:
-      - a path relative to this folder, e.g. "fonts/GeistPixel-Grid.ttf"
-      - an absolute path
-      - an installed font name, e.g. "DotGothic16"
-    """
-
-    def __init__(self, settings):
-        self.ui_value = str(settings.get("ui_font") or DEFAULT_SETTINGS["ui_font"])
-        self.code_value = str(settings.get("code_font") or DEFAULT_SETTINGS["code_font"])
-        self.cache = {}
-        self.warned = set()
-
-    @staticmethod
-    def _existing_path(value):
-        path = Path(value).expanduser()
-        if not path.is_absolute():
-            path = BASE / path
-        return path if path.exists() else None
-
-    def resolve(self, value, weight):
-        found = self._existing_path(value)
-        if found:
-            return str(found)
-
-        normalized = value.strip().lower().replace(" ", "").replace("-", "")
-        if normalized in ("dotgothic16", "dotgothic", "geistmono", "sourcecodepro", "sourcecode"):
-            found = find_source_code_pro(weight)
-            if found:
-                return found
-
-        bold = weight == "bold"
-        for name in (value, value.replace(" ", "")):
-            found = pygame.font.match_font(name, bold=bold)
-            if found:
-                return found
-        if bold:
-            found = pygame.font.match_font(value)
-            if found:
-                return found
-        return None
-
-    def get(self, size, weight="regular", mono=False):
-        key = (mono, size, weight)
-        if key in self.cache:
-            return self.cache[key]
-
-        value = self.code_value if mono else self.ui_value
-        path = self.resolve(value, weight)
-        if path:
-            if "dotgothic" in Path(path).name.lower():
-                size = max(16, round(size / 8) * 8)      # pixel font: multiples of 8 stay crisp
-            font = pygame.font.Font(path, size)
-        else:
-            fallback = "dejavusansmono,monospace" if mono else "dejavusans,arial,helvetica"
-            font = pygame.font.SysFont(fallback, size, bold=(weight == "bold"))
-            if value not in self.warned:
-                print(f"[fonts] Could not find {value!r}; using a system fallback.")
-                self.warned.add(value)
-
-        self.cache[key] = font
-        return font
 
 
 # ------------------------------------------------------------------ data
@@ -291,8 +166,7 @@ class App:
         self.screen = pygame.display.set_mode((W, H))
         self.clock = pygame.time.Clock()
 
-        self.settings = load_settings()
-        self.fonts = FontBook(self.settings)
+        self.background = ps.grid_surface(W, H)
 
         self.best = load_best()
         self.last_index = -1
@@ -305,7 +179,10 @@ class App:
 
     # -------------------------------------------------------------- fonts
     def font(self, size, weight="regular", mono=False):
-        return self.fonts.get(size, weight, mono)
+        """Notebook Paper fonts: Courier Prime for code, Gaegu for headings (bold), Patrick Hand for text."""
+        if mono:
+            return ps.mono(size, bold=weight == "bold")
+        return ps.title(round(size * 1.15)) if weight in ("bold", "medium") else ps.body(round(size * 1.2))
 
     def text(
         self,
@@ -426,7 +303,7 @@ class App:
     # -------------------------------------------------------------- draw
     def draw(self):
         surf = self.screen
-        surf.fill(BG)
+        surf.blit(self.background, (0, 0))
 
         self.draw_header(surf)
         if self.state == "typing":
@@ -437,125 +314,96 @@ class App:
         pygame.display.flip()
 
     def draw_header(self, surf):
-        self.text(surf, "PYTHON TYPE RACE", 26, INK, (50, 24), weight="bold")
-        self.text(surf, "type it fast. type it right.", 15, MUTED, (50, 56))
+        self.text(surf, "PYTHON TYPE RACE", 40, ps.BLUE, (50, 14), weight="bold")
+        self.text(surf, "type it fast. type it right.", 16, MUTED, (52, 62))
 
-        self.text(surf, "PERSONAL BEST", 13, MUTED, (W - 50, 25), "topright")
+        self.text(surf, "PERSONAL BEST", 14, MUTED, (W - 50, 18), "topright")
         best_score = self.best["score"] if self.best else "--"
-        self.text(surf, best_score, 28, INK, (W - 50, 44), "topright", weight="bold")
+        self.text(surf, best_score, 34, INK, (W - 50, 36), "topright", weight="bold")
 
-        pygame.draw.line(surf, LINE, (50, 86), (W - 50, 86), 1)
+        pygame.draw.line(surf, ps.RED, (50, 94), (W - 50, 94), 2)
 
     def draw_typing(self, surf):
         s = self.session
 
-        self.text(
-            surf,
-            f"SNIPPET   /   {s.concept.upper()}",
-            13,
-            MUTED,
-            (50, 108),
-        )
-        if not s.started:
-            status = "START TYPING"
-            color = ACCENT
-        else:
-            status = f"{int(s.progress * 100)}%"
-            color = ACCENT
-        self.text(surf, status, 13, color, (W - 50, 108), "topright", weight="bold")
+        self.text(surf, f"SNIPPET  /  {s.concept.upper()}", 14, MUTED, (52, 108))
+        status = "START TYPING" if not s.started else f"{int(s.progress * 100)}%"
+        self.text(surf, status, 15, ACCENT, (W - 50, 106), "topright", weight="bold")
 
-        panel = pygame.Rect(50, 132, 900, 300)
-        border = RED if s.error_flash > 0 else LINE
-        pygame.draw.rect(surf, EDGE, panel.move(0, 8), border_radius=14)           # hard 3D shadow
-        pygame.draw.rect(surf, PANEL, panel, border_radius=14)
-        pygame.draw.rect(surf, border, panel, width=3, border_radius=14)
+        panel = pygame.Rect(50, 142, 900, 290)
+        border = RED if s.error_flash > 0 else INK
+        ps.card(surf, panel, border=border, seed=17, width=3)
+        pygame.draw.line(surf, ps.RED, (panel.left + 56, panel.top + 8), (panel.left + 56, panel.bottom - 8), 2)   # margin line
 
         self.draw_code(surf, panel, s)
 
         # progress bar along the bottom edge of the panel
         if s.progress > 0:
-            pygame.draw.rect(
-                surf,
-                ACCENT,
-                (panel.left + 1, panel.bottom - 3, int((panel.width - 2) * s.progress), 2),
-            )
+            pygame.draw.rect(surf, ACCENT, (panel.left + 16, panel.bottom - 14, int((panel.width - 32) * s.progress), 4), border_radius=2)
 
         self.draw_stats(surf, s)
         self.draw_footer(surf)
 
     def draw_code(self, surf, panel, session):
+        """Code area. Every character sits in a fixed-width cell of a true monospace font and is centred in it,
+        so the highlight and the caret always line up with the glyph they belong to."""
         lines = session.code.split("\n")
-        code_font = self.font(30, mono=True)
-        small = self.font(13, mono=True)
-        advance = code_font.size("M")[0]
-        line_h = 48
+        code_font = ps.mono(34)
+        small = self.font(14)
+        adv = ps.advance(code_font)
+        glyph_h = code_font.get_height()
+        line_h = 58
 
-        area_top = panel.top + 26
-        area_bottom = panel.bottom - 26
+        area_top = panel.top + 16
+        area_bottom = panel.bottom - 16
         block_h = len(lines) * line_h
         start_y = area_top + max(0, (area_bottom - area_top - block_h) // 2)
+        left = panel.left + 84                      # first text column (right of the margin line)
 
         index = 0
         for row, line in enumerate(lines):
-            y = start_y + row * line_h
-            line_no = small.render(str(row + 1), True, MUTED)
-            surf.blit(line_no, (panel.left + 28, y + 10))
-            x = panel.left + 64
+            row_top = start_y + row * line_h
+            ty = row_top + (line_h - glyph_h) // 2     # top of every glyph on this row
+            num = small.render(str(row + 1), True, ps.INK_FAINT)
+            surf.blit(num, num.get_rect(midright=(panel.left + 44, row_top + line_h // 2)))
+            x = left
 
             for col, ch in enumerate(line):
                 pos = index + col
                 current = pos == session.i
                 typed = pos < session.i
-
                 if current:
-                    pygame.draw.rect(
-                        surf,
-                        ACCENT_SOFT,
-                        (x - 3, y - 1, advance + 6, line_h - 12),
-                        border_radius=4,
-                    )
+                    pygame.draw.rect(surf, ACCENT_SOFT, (x, ty + 2, adv, glyph_h - 4), border_radius=5)
                 if ch != " ":
-                    color = TYPED if typed else INK
-                    surf.blit(code_font.render(ch, True, color), (x, y))
+                    img = code_font.render(ch, True, TYPED if typed else INK)
+                    surf.blit(img, (x + (adv - img.get_width()) // 2, ty))
                 elif current:
-                    pygame.draw.circle(
-                        surf,
-                        ACCENT,
-                        (x + advance // 2, y + line_h // 2 - 2),
-                        2,
-                    )
-                x += advance
+                    pygame.draw.circle(surf, ACCENT, (x + adv // 2, ty + glyph_h // 2 + 4), 3)
+                x += adv
 
             if session.i == index + len(line) and row < len(lines) - 1:
-                hint_w = self.font(12, "medium").size("ENTER")[0] + 16
-                hint = pygame.Rect(x + 5, y + 7, hint_w, 26)
-                pygame.draw.rect(surf, ACCENT_SOFT, hint, border_radius=4)
-                self.text(surf, "ENTER", 12, ACCENT, hint.center, "center", weight="medium")
+                hint_w = self.font(13, "medium").size("ENTER")[0] + 20
+                hint = pygame.Rect(x + 6, row_top + line_h // 2 - 15, hint_w, 30)
+                ps.pill(surf, hint, ACCENT_SOFT, shadow=False, radius=8)
+                self.text(surf, "ENTER", 13, INK, hint.center, "center", weight="medium")
 
             index += len(line) + 1
 
-        # caret
+        # caret: a blinking bar on the left edge of the current cell, exactly as tall as the glyph
         if not session.done:
             before = session.code[: session.i]
             row = before.count("\n")
             col = session.i - (before.rfind("\n") + 1)
-            caret_x = panel.left + 64 + col * advance
-            caret_y = start_y + row * line_h
+            cx = left + col * adv
+            cy = start_y + row * line_h + (line_h - glyph_h) // 2
             visible = not session.started or (self.anim * 1.8) % 1 < 0.6
             if session.started and session.elapsed < 0.8:
                 visible = True
             if visible and session.code[session.i] != "\n":
-                pygame.draw.line(
-                    surf,
-                    ACCENT,
-                    (caret_x - 3, caret_y + 4),
-                    (caret_x - 3, caret_y + line_h - 15),
-                    2,
-                )
+                pygame.draw.rect(surf, ps.RED, (cx - 2, cy + 3, 3, glyph_h - 6), border_radius=1)
 
     def draw_stats(self, surf, session):
-        pygame.draw.line(surf, LINE, (50, 462), (W - 50, 462), 1)
-
+        pygame.draw.line(surf, ps.INK_FAINT, (50, 462), (W - 50, 462), 1)
         accuracy = session.accuracy
         values = [
             ("TIME", clock_string(session.elapsed), INK),
@@ -564,20 +412,14 @@ class App:
             ("ERRORS", str(session.errors), RED if session.errors else INK),
         ]
         for i, (label, value, color) in enumerate(values):
-            x = 50 + i * 225
-            self.text(surf, label, 13, MUTED, (x, 480))
-            self.text(surf, value, 34, color, (x, 500), weight="bold")
+            x = 52 + i * 225
+            self.text(surf, label, 14, MUTED, (x, 472))
+            self.text(surf, value, 42, color, (x, 494), weight="bold")
 
     def draw_footer(self, surf):
-        pygame.draw.line(surf, LINE, (50, 574), (W - 50, 574), 1)
-        self.text(
-            surf,
-            "ENTER for a new line  ·  indentation is automatic  ·  mistakes cost accuracy",
-            15,
-            MUTED,
-            (50, 594),
-        )
-        self.text(surf, "ESC  quit", 15, MUTED, (W - 50, 594), "topright")
+        pygame.draw.line(surf, ps.INK_FAINT, (50, 574), (W - 50, 574), 1)
+        self.text(surf, "ENTER for a new line  ·  indentation is automatic  ·  mistakes cost accuracy", 15, MUTED, (52, 590))
+        self.text(surf, "ESC  quit", 15, MUTED, (W - 50, 590), "topright")
 
     # ----------------------------------------------------------- results
     def draw_results(self, surf):
@@ -585,87 +427,47 @@ class App:
         if r is None:
             return
 
-        self.text(
-            surf,
-            f"SNIPPET   /   {r['concept'].upper()}",
-            13,
-            MUTED,
-            (50, 108),
-        )
-        self.text(surf, "COMPLETE", 13, GREEN, (W - 50, 108), "topright", weight="bold")
+        self.text(surf, f"SNIPPET  /  {r['concept'].upper()}", 14, MUTED, (52, 108))
+        self.text(surf, "COMPLETE", 15, GREEN, (W - 50, 106), "topright", weight="bold")
 
-        card = pygame.Rect(170, 148, 660, 358)
-        pygame.draw.rect(surf, PANEL, card)
-        pygame.draw.rect(surf, LINE, card, width=1)
+        card = pygame.Rect(170, 140, 660, 380)
+        ps.card(surf, card, seed=23, width=3)
+        pygame.draw.line(surf, ps.RED, (card.left + 14, card.top + 14), (card.right - 14, card.top + 14), 2)
 
-        self.text(surf, "SNIPPET COMPLETE", 13, MUTED, (card.centerx, card.top + 30), "center")
-
+        self.text(surf, "SNIPPET COMPLETE", 15, MUTED, (card.centerx, card.top + 40), "center")
         time_text = f"{r['time']:.2f}s" if r["time"] < 60 else clock_string(r["time"])
-        self.text(
-            surf,
-            time_text,
-            60,
-            INK,
-            (card.centerx, card.top + 90),
-            "center",
-            weight="bold",
-        )
-        self.text(surf, "TIME", 13, MUTED, (card.centerx, card.top + 146), "center")
+        self.text(surf, time_text, 76, ps.BLUE, (card.centerx, card.top + 100), "center", weight="bold")
+        self.text(surf, "TIME", 14, MUTED, (card.centerx, card.top + 156), "center")
 
-        pygame.draw.line(surf, LINE, (card.left + 40, card.top + 178), (card.right - 40, card.top + 178), 1)
+        pygame.draw.line(surf, ps.INK_FAINT, (card.left + 40, card.top + 186), (card.right - 40, card.top + 186), 1)
 
-        stats = [
-            ("WPM", f"{r['wpm']:.1f}"),
-            ("ACCURACY", f"{r['accuracy']:.1f}%"),
-            ("ERRORS", str(r["errors"])),
-            ("SCORE", str(r["score"])),
-        ]
+        stats = [("WPM", f"{r['wpm']:.1f}"), ("ACCURACY", f"{r['accuracy']:.1f}%"), ("ERRORS", str(r["errors"])), ("SCORE", str(r["score"]))]
         col_w = (card.width - 80) // 4
         for i, (label, value) in enumerate(stats):
             x = card.left + 40 + i * col_w + col_w // 2
-            self.text(surf, value, 30, INK, (x, card.top + 204), "center", weight="bold")
-            self.text(surf, label, 13, MUTED, (x, card.top + 240), "center")
+            self.text(surf, value, 38, INK, (x, card.top + 214), "center", weight="bold")
+            self.text(surf, label, 14, MUTED, (x, card.top + 254), "center")
 
-        pygame.draw.line(surf, LINE, (card.left + 40, card.top + 268), (card.right - 40, card.top + 268), 1)
+        pygame.draw.line(surf, ps.INK_FAINT, (card.left + 40, card.top + 280), (card.right - 40, card.top + 280), 1)
 
         if r["is_best"]:
-            self.text(
-                surf,
-                "NEW PERSONAL BEST",
-                14,
-                ACCENT,
-                (card.centerx, card.top + 288),
-                "center",
-                weight="bold",
-            )
+            self.text(surf, "NEW PERSONAL BEST", 17, ps.RED, (card.centerx, card.top + 302), "center", weight="bold")
         elif self.best:
-            self.text(
-                surf,
-                f"BEST  {self.best['score']} PTS   ·   {self.best.get('wpm', 0):.1f} WPM",
-                14,
-                MUTED,
-                (card.centerx, card.top + 288),
-                "center",
-            )
+            self.text(surf, f"BEST  {self.best['score']} PTS   ·   {self.best.get('wpm', 0):.1f} WPM", 15, MUTED, (card.centerx, card.top + 302), "center")
 
-        hints = [
-            ("ENTER", "next snippet"),
-            ("R", "same snippet"),
-            ("ESC", "quit"),
-        ]
-        widths = [max(48, self.font(13).size(k)[0] + 18) for k, _ in hints]
-        descs = [self.font(15).size(d)[0] for _, d in hints]
-        total = sum(w + 8 + d for w, d in zip(widths, descs)) + 2 * 24
+        hints = [("ENTER", "next snippet"), ("R", "same snippet"), ("ESC", "quit")]
+        key_font, desc_font = self.font(14, "medium"), self.font(15)
+        widths = [max(58, key_font.size(k)[0] + 22) for k, _ in hints]
+        descs = [desc_font.size(d)[0] for _, d in hints]
+        total = sum(w + 10 + d for w, d in zip(widths, descs)) + 2 * 28
         x = card.centerx - total // 2
-        y = card.bottom - 46
+        y = card.bottom - 52
         for (key, desc), w, d in zip(hints, widths, descs):
-            box = pygame.Rect(x, y, w, 28)
-            pygame.draw.rect(surf, EDGE, box.move(0, 4), border_radius=6)
-            pygame.draw.rect(surf, SOFT, box, border_radius=6)
-            pygame.draw.rect(surf, LINE, box, width=2, border_radius=6)
-            self.text(surf, key, 13, INK, box.center, "center", weight="medium")
-            self.text(surf, desc, 15, MUTED, (x + w + 9, y + 4))
-            x += w + 8 + d + 24
+            box = pygame.Rect(x, y, w, 34)
+            ps.pill(surf, box, ps.CARD, radius=8)
+            self.text(surf, key, 14, INK, box.center, "center", weight="medium")
+            self.text(surf, desc, 15, MUTED, (x + w + 12, y + 3))
+            x += w + 10 + d + 28
 
     # --------------------------------------------------------------- run
     async def run(self):

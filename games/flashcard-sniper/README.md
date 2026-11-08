@@ -14,6 +14,9 @@ npm run build:py            # all Python games   (or: bash scripts/build-python-
 ```
 Then refresh the arcade. `web/` is generated: don't edit it, commit it.
 
+## Look
+Restyled to Notebook Paper (index-card question, hand-drawn answer cards, scope over graph paper); colours/fonts come from `src/paper_style.py` + `src/fonts/` (copied from `shared/python/` by the build). Dark/light follows the system; `ARCADE_THEME=light|dark` forces it on the desktop.
+
 ## What differs from the original
 Everything browser-specific goes through `src/arcade_web.py` (copied from `shared/python/arcade_web.py` by the build script;
 edit the shared one) and is a no-op on the desktop.
