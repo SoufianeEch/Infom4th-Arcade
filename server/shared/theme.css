@@ -24,13 +24,23 @@
   --key-face: var(--card); --key-line: var(--ink); --key-hi: transparent; --key-lo: transparent; --key-edge: var(--ink);
   --blue-hi: var(--blue); --blue-edge: var(--ink);
 }
+/* dark tokens: follow the system setting, unless the player picked light */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --paper: #10182e; --card: #16213f; --ink: #dbe5ff; --ink-soft: #a5b5e0; --ink-faint: #6f80b3;
     --red: #ff7b73; --blue: #5b8cff; --on-blue: #0b1430; --hl: #6b5a12; --grid: #1c2849; --shadow: #00000055;
     --grid-bg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath d='M24 0H0V24' fill='none' stroke='%231c2849' stroke-width='1'/%3E%3C/svg%3E");
     --green: #4fd8a4;
   }
+}
+/* a manual choice from the theme button always wins over the system setting */
+:root[data-theme="light"] { color-scheme: light; }
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: #10182e; --card: #16213f; --ink: #dbe5ff; --ink-soft: #a5b5e0; --ink-faint: #6f80b3;
+  --red: #ff7b73; --blue: #5b8cff; --on-blue: #0b1430; --hl: #6b5a12; --grid: #1c2849; --shadow: #00000055;
+  --grid-bg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath d='M24 0H0V24' fill='none' stroke='%231c2849' stroke-width='1'/%3E%3C/svg%3E");
+  --green: #4fd8a4;
 }
 *, *::before, *::after { box-sizing: border-box; }
 html { background: var(--paper); }

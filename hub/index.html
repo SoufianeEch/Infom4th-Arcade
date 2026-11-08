@@ -4,6 +4,15 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
+  <script>
+    // apply the saved theme before first paint so switching does not flash
+    (function () {
+      try {
+        var t = localStorage.getItem('infom4th.arcade.theme');
+        if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+      } catch (e) {}
+    })();
+  </script>
   <title>InfoM4th Arcade</title>
   <link rel="icon" href="./logo.png" type="image/png">
   <link rel="stylesheet" href="/shared/theme.css">
@@ -15,6 +24,7 @@
     <nav class="nav" aria-label="Main"><a href="#/" id="nav-browse" class="active">Browse</a><a href="#/scores" id="nav-scores">Leaderboards</a></nav>
     <label class="search"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="Search games" aria-label="Search games" autocomplete="off"></label>
     <div class="user" id="who" hidden><span class="avatar" id="avatar" aria-hidden="true"></span><span class="user-name" id="who-name"></span><button class="btn btn-ghost btn-small" id="change-name" type="button">Change</button></div>
+    <button class="btn btn-ghost btn-small" id="theme" type="button" aria-pressed="false" aria-label="Toggle dark mode" title="Switch to dark mode">☾ Dark</button>
   </header>
 
   <!-- browse -->

@@ -12,6 +12,8 @@
 .search input { flex: 1; min-width: 0; border: 0; background: none; outline: none; padding: 7px 0; }
 .search input::placeholder { color: var(--ink-faint); }
 .user { display: flex; align-items: center; gap: 10px; margin-left: auto; }
+#theme { margin-left: auto; }                       /* keep the toggle at the far right */
+.user:not([hidden]) + #theme { margin-left: 0; }    /* ...but snuggle up to the name block when it is shown */
 .avatar { display: grid; place-items: center; width: 38px; height: 38px; flex: none; border: 2px solid var(--ink); border-radius: 50% 45% 55% 48%; background: var(--hl); font: 700 20px var(--title); text-transform: uppercase; }
 .user-name { font-size: 22px; max-width: 12ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 

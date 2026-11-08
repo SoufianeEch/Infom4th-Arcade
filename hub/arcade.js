@@ -5,6 +5,8 @@
   const $ = id => document.getElementById(id);
   const NAME_KEY = 'infom4th.arcade.name';
   const FEATURED_KEY = 'infom4th.arcade.lastFeatured';
+  const THEME_KEY = 'infom4th.arcade.theme';
+  const THEME_LABEL = { light: '☾ Dark', dark: '☀ Light' };
   const NAME_RE = /^[A-Za-z0-9 _.\-]{1,12}$/;
   const RESERVED = ['anon', 'anonymous', 'guest', 'player', 'unknown'];   // no default names: players choose their own
   let games = [];
@@ -48,6 +50,27 @@
     return body;
   }
   const topScores = id => json('/api/scores/' + id).catch(() => []);
+
+  // ------------------------------------------------------------ light / dark theme
+  function applyTheme(t, save) {
+    document.documentElement.dataset.theme = t;
+    if (save) safeSet(THEME_KEY, t);
+    const btn = $('theme');
+    btn.textContent = THEME_LABEL[t];
+    btn.setAttribute('aria-pressed', String(t === 'dark'));
+    btn.title = t === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+  }
+  function initTheme() {
+    const saved = safeGet(THEME_KEY);
+    const system = matchMedia('(prefers-color-scheme: dark)');
+    const effective = saved === 'light' || saved === 'dark' ? saved : (system.matches ? 'dark' : 'light');
+    applyTheme(effective, false);
+    // keep following the OS only while the player has not chosen manually
+    system.addEventListener?.('change', e => {
+      const choice = safeGet(THEME_KEY);
+      if (choice !== 'light' && choice !== 'dark') applyTheme(e.matches ? 'dark' : 'light', false);
+    });
+  }
 
   // ------------------------------------------------------------ player name (required before any game runs)
   function showWho() {
@@ -293,12 +316,16 @@
   $('back').addEventListener('click', () => { location.hash = '#/'; });
   $('change-name').addEventListener('click', changeName);
   $('change-name-2').addEventListener('click', changeName);
+  $('theme').addEventListener('click', () => {
+    applyTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark', true);
+  });
   $('search').addEventListener('input', e => { state.q = e.target.value.trim(); if (location.hash.startsWith('#/play') || location.hash === '#/scores') location.hash = '#/'; else renderGrid(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && document.body.classList.contains('fs-fallback')) document.body.classList.remove('fs-fallback'); });
   window.addEventListener('hashchange', route);
 
   const saved = cleanName(safeGet(NAME_KEY));
   name = nameProblem(saved) ? '' : saved;            // a stored name that breaks the rules (e.g. the retired default name) is dropped
+  initTheme();
   showWho();
 
   json('/api/games').then(list => { games = list; renderFilters(); renderSort(); route(); })
