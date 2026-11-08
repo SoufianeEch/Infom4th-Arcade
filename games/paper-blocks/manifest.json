@@ -1,0 +1,34 @@
+{
+  "id": "paper-blocks",
+  "title": "Paper Blocks",
+  "tagline": "Stack the falling blocks and clear lines.",
+  "entry": "web/index.html",
+  "order": 110,
+  "tech": "python-pygbag",
+  "controls": {
+    "keyboard": "Arrows move, Up/X rotate, Z rotate back, Space drop, C hold, P pause",
+    "touch": "On-screen buttons"
+  },
+  "scoring": {
+    "enabled": true,
+    "label": "points",
+    "max": 5000000
+  },
+  "aspect": "1000/640",
+  "tags": [
+    "python",
+    "puzzle"
+  ],
+  "short": "BLOCKS",
+  "glyph": "🟦",
+  "genre": "Puzzle",
+  "madeWith": "Python",
+  "description": "The classic falling-block puzzle on graph paper. Seven pieces from a shuffled bag, SRS rotation with wall kicks, a ghost piece showing where you will land, hold, a next queue, lock delay, and levels that speed the game up. Clear four lines at once for a big score, and chain back-to-back clears for a bonus.",
+  "theme": {
+    "bg": "#0f2a6b",
+    "fg": "#ffffff",
+    "accent": "#ffd43b",
+    "accentFg": "#2b2000",
+    "soft": "#1b3f96"
+  }
+}

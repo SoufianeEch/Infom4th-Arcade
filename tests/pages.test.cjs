@@ -135,3 +135,22 @@ test('Python games show a paper-style loading screen (shared/python-loader.css),
   }
   assert.ok(checked >= 6);
 });
+
+test('the featured game is chosen at random (never the same twice in a row), once per page load', () => {
+  const vm = require('node:vm');
+  const src = fs.readFileSync(path.join(root, 'hub/arcade.js'), 'utf8');
+  assert.ok(!/games\.find\(x => x\.featured\)/.test(src), 'no fixed featured game any more');
+  const start = src.indexOf('function pickFeatured'); let depth = 0, end = src.indexOf('{', start);
+  for (let k = end; k < src.length; k++) { if (src[k] === '{') depth++; else if (src[k] === '}' && --depth === 0) { end = k + 1; break; } }
+  const ctx = {}; vm.createContext(ctx); vm.runInContext(src.slice(start, end) + '\nthis.pick = pickFeatured;', ctx);
+  const games = ['a', 'b', 'c', 'd'].map(id => ({ id })).concat([{ id: 'hidden', featured: false }]);
+  const seen = new Set();
+  let seed = 3; const rnd = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; };
+  let last = null;
+  for (let i = 0; i < 400; i++) { const g = ctx.pick(games, last, rnd); assert.notEqual(g.id, last, 'not the same game twice in a row'); assert.notEqual(g.id, 'hidden', 'opted-out games are never featured'); seen.add(g.id); last = g.id; }
+  assert.deepEqual([...seen].sort(), ['a', 'b', 'c', 'd'], 'every game gets its turn');
+  assert.equal(ctx.pick([{ id: 'only' }], 'only', rnd).id, 'only', 'a single game is featured even if it was last time');
+  assert.equal(ctx.pick([{ id: 'x', featured: false }], null, rnd).id, 'x', 'if everything opts out the first game is used');
+  assert.equal(ctx.pick([], null, rnd), null);
+  assert.ok(/featured = pickFeatured\(games, safeGet\(FEATURED_KEY\)\)/.test(src) && /if \(!featured \|\| !games\.includes\(featured\)\)/.test(src), 'picked once, then kept while filtering');
+});

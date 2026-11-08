@@ -4,6 +4,7 @@
 (function () {
   const $ = id => document.getElementById(id);
   const NAME_KEY = 'infom4th.arcade.name';
+  const FEATURED_KEY = 'infom4th.arcade.lastFeatured';
   const NAME_RE = /^[A-Za-z0-9 _.\-]{1,12}$/;
   const RESERVED = ['anon', 'anonymous', 'guest', 'player', 'unknown'];   // no default names: players choose their own
   let games = [];
@@ -130,8 +131,22 @@
     box.append(el('span', {}, 'Sort by'), ...[['featured', 'Featured'], ['az', 'A–Z']].map(([v, t]) =>
       el('button', { type: 'button', class: 'chip', 'aria-pressed': String(state.sort === v), onclick: () => { state.sort = v; renderSort(); renderGrid(); } }, t)));
   }
+  /** The featured game is chosen at random once per page load (it stays put while you search or filter) and is never the same
+   *  game as last time when there is a choice. A game can opt out with "featured": false in its manifest. */
+  function pickFeatured(list, lastId, rnd = Math.random) {
+    const pool = list.filter(g => g.featured !== false);
+    if (!pool.length) return list[0] || null;
+    const fresh = pool.filter(g => g.id !== lastId);
+    const from = fresh.length ? fresh : pool;
+    return from[Math.floor(rnd() * from.length)];
+  }
+  let featured = null;
   function renderFeatured() {
-    const g = games.find(x => x.featured) || games[0], box = $('featured');
+    if (!featured || !games.includes(featured)) {
+      featured = pickFeatured(games, safeGet(FEATURED_KEY));
+      if (featured) safeSet(FEATURED_KEY, featured.id);
+    }
+    const g = featured, box = $('featured');
     box.textContent = '';
     if (!g) { box.hidden = true; return; }
     Object.entries(themeVars(g)).forEach(([k, v]) => box.style.setProperty(k, v));

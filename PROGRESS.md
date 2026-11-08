@@ -42,6 +42,15 @@ Newest entries on top. Update this file with every change.
 
 ## Change log
 
+### 2026-11-08 — random featured game
+- The hub's featured game is now picked at random on each page load (once, so it stays while you search or filter) and is never the same game as the previous visit (remembered in `localStorage`). Any game can opt out with `"featured": false` in its manifest; the old `"featured": true` flag (Flappy) was removed because it no longer means anything. Pure function `pickFeatured` is tested (fairness over 400 draws, no repeats, opt-out, edge cases).
+
+### 2026-11-08 — Paper Blocks (falling-block puzzle)
+- New game `games/paper-blocks/` (Python + pygbag, paper style, in the menu). Named "Paper Blocks" because Tetris is a trademark. `Engine` (rules, no drawing) + `Game` (drawing, input, effects).
+- Rules: 10x20 board (+2 hidden rows), 7-bag randomizer, SRS rotation with the guideline wall-kick tables (I and JLSTZ), ghost piece, hold (once per piece), 4-piece next queue, guideline gravity curve (1 s/row at level 1), 0.5 s lock delay with up to 15 resets, soft drop +1 and hard drop +2 per row, line clears 100/300/500/800 x level, back-to-back four-line x1.5, combo bonus, a level every 10 lines, 0.35 s line-clear flash, game over when a piece cannot spawn or locks above the board.
+- Controls: arrows / WASD, Up or X rotate, Z rotate back, Space drop, C or Shift hold, P pause; own key repeat (160 ms delay, 45 ms rate); on-screen buttons on touch screens (`arcade_web.is_touch()`, new shared helper; button icons are drawn shapes because the handwriting fonts have no arrow glyphs). Effects: line-clear confetti, popups ("FOUR LINES! +800", "LEVEL 3"), screen shake on big clears/long drops. No sound.
+- 30 headless tests: shapes/rotations/kick tables, bag randomizer, movement and kicks, ghost, drops and scoring, lock delay and reset limit, line clears 1-4, back-to-back and combos, level-ups, hold, a stacking bot that clears 20+ lines, random play invariants, key repeat, touch buttons, every screen draws. Looked at by rendering screens headless (menu, play, touch layout, game over). Not played by a human or seen in a browser; feel (speeds, key repeat) is the thing to tune.
+
 ### 2026-11-08 — paper-style loading screen for the Python games
 - pygbag's default loading page (green box with blue text, bare progress bar, light-blue background) is replaced by `shared/python-loader.css`, linked into every built game page by `scripts/fit_pygbag_page.py`: graph-paper background, a white card with a hand-drawn border and hard shadow, "Loading game…" in Gaegu with a pencil scribbling back and forth, the status text in Patrick Hand, a pencil-blue progress bar, and the "Ready to start! Click/touch the page" note as a yellow sticky label. Light/dark follows the system; reduced motion stops the pencil. The loading text "Loading, please wait ..." became "Loading…". New test checks every built page links it. All six Python games rebuilt. Not seen in a browser.
 

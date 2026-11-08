@@ -63,3 +63,13 @@ def prefers_dark():
             return True
     import os
     return os.environ.get("ARCADE_THEME", "dark").lower() != "light"
+
+
+def is_touch():
+    """True on touch screens (phones, tablets): games use it to show on-screen buttons. Desktop: always False."""
+    if not WEB:
+        return False
+    try:
+        return bool(window.matchMedia("(pointer: coarse)").matches)
+    except Exception:
+        return False

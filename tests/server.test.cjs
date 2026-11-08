@@ -17,7 +17,7 @@ async function boot(opts = {}) {
 test('lists games and serves hub + game files', async () => {
   const a = await boot();
   const games = await (await fetch(a.base + '/api/games')).json();
-  assert.deepEqual(games.map(g => g.id), ['flappy', 'doom', 'code-snake', 'flashcard-sniper', 'type-race', 'binary-blocks', 'variable-shooter', 'memory-match', 'imposter', 'paper-trail']);
+  assert.deepEqual(games.map(g => g.id), ['flappy', 'doom', 'code-snake', 'flashcard-sniper', 'type-race', 'binary-blocks', 'variable-shooter', 'memory-match', 'imposter', 'paper-trail', 'paper-blocks']);
   assert.equal((await fetch(a.base + '/')).status, 200);
   assert.equal((await fetch(a.base + '/games/flappy/index.html')).status, 200);
   const wasm = await fetch(a.base + '/games/doom/runtime/websockets-doom.wasm', { method: 'HEAD' });
